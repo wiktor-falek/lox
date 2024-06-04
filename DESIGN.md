@@ -81,11 +81,7 @@ printf("{a=}"); // "a=1"
 # Primitive data types
 
 ...
-Int - 64 bit signed integer
-Int32 - 32 bit signed integer
-UInt32 - 32 bit unsigned integer
-...
-Int8 - 8 bit signed integer
+Int - Dynamic size bit signed integer
 
 <!-- https://www.geeksforgeeks.org/ieee-standard-754-floating-point-numbers/ -->
 
@@ -99,13 +95,14 @@ Atom/Symbol ?
 
 List<T> - sequence of items
 Dict<K, V> - key value pairs
-Tuple<...> - Immutable fixed size group of items
+Tuple<..Items> - Immutable fixed size group of items
 Set<T>
 Map
 OrderedMap
 
 # Utility Types
 
+Nil
 Result<T, E>
 Option<T> -> Some<T> | None
 
@@ -188,8 +185,7 @@ fn divide_by(a: number, b: number) -> Result<Int, String> {
   }
 }
 
-// unwrap to throw Error or return the value
-const value = divide_by(2, 0).unwrap() // throws Error
+const value = divide_by(2, 0)? // throws Error
 
 // or handle the error without throwing
 const value, err = divide_by(2, 0)
@@ -244,19 +240,18 @@ fn rgb_color(color: Color) {
         Bright -> "a"
         Normal -> "b"
         Dark -> "c"
+        }
       }
-      
-      }
-    // Green(shade) -> "#00FF00"
-    // Blue(shade) -> "#0000FF"
+    Green(_shade) -> "#00FF00"
+    Blue(_shade) -> "#0000FF"
   }
 }
 
 rgb_color(Red)
 
-type Point {
-  x: Int
-  y: Int
+struct Point {
+  x: Int = 0,
+  y: Int = 0,
 }
 
 ```
@@ -268,10 +263,72 @@ fn a() -> Result<Int, None>
 fn b() -> Result<Int, None>
 
 fn use_example(input: Int) {
-  // if either is an Error it will early return the Error, otherwise it returns the ResultOk type
-  use a_result = a(input)
-  use b_result = b(input)
+  // returns Error on ResultError, otherwise the function continues and variable is ResultOk
+  use a_result <- a(input)
+  use b_result <- b(input)
   return a_result + b_result
 }
 
+```
+
+## Destructuring
+
+```rust
+let tuple = (1, "a");
+let number, string = tuple;
+
+let numbers = [1, 2, 3, 4, 5]
+
+let first, ..rest, last = numbers
+```
+
+## Assert
+
+```
+assert 1 == 1
+let assert Ok() =
+```
+
+## Imports
+
+## Throwing errors
+
+```js
+fn value_or_error() -> Result<Int, Nil>
+
+let a = value_or_error()? // Throws if Error
+```
+
+```js
+let condition = True
+
+case condition {
+  True -> print("Success")
+  False -> panic
+}
+```
+
+## Classes
+
+```js
+pub class Person {
+  pub name: String
+  pub static public_static_variable = "foo"
+  static private_static_variable: Int = 2
+
+  // constructor
+  new(name: String) {
+    this.name = name
+  }
+
+  private_method() {}
+
+  pub public_method() {}
+
+  static private_static_method() {}
+
+  pub static public_static_method() {}
+
+  pub static async public_static_async_method() -> Task<T> {}
+}
 ```
