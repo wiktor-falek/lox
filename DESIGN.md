@@ -17,7 +17,9 @@
 let x = 69
 
 // Forward declaration
-let y: UInt8 = 0
+let y: Int = 0
+
+let x: Int // Error - Expected Int, found None
 
 // Variables are immutable by default
 x = 70 // Error
@@ -40,9 +42,6 @@ let y: Int = "this will throw TypeError"
 const greeting = "Hello"
 greeting = "Hi" // Error
 
-// uninitialized variables throw if type is not declared
-let x: Int // Option(Int)
-
 // and can be assigned later
 x = 10
 x = None
@@ -58,12 +57,12 @@ print("Hello", "World"); // "Hello World\n"
 
 // print by default places newline character
 // this can be omitted by changing end = "\n" to end = ""
-print("Hello World", (end = "")); // "Hello World"
+print("Hello World", end = ""); // "Hello World"
 
-// if you need to format the string with multiple values use printf()
-const a = 1;
-const b = 2;
-const c = a + b;
+// to format a string with values use printf()
+let a = 1;
+let b = 2;
+let c = a + b;
 
 // each curly brace '{}' will be replaced with the value passed after
 printf("{} + {} = {}", a, b, c);
@@ -149,7 +148,7 @@ for (let i, item in List.enum(list)) {
 ## While loop
 
 ```js
-let i: number = 10
+let mut i = 10
 while (i) {
   i--
 }
@@ -165,13 +164,12 @@ continue
 fn add(a: Int, b: Int) {
   return a + b
 }
-
 ```
 
 # Error handling
 
 ```js
-fn divide_by(a: number, b: number) -> Result<Int, String> {
+fn divide_by(a: Int, b: Int) -> Result<Int, String> {
   if (b == 0) {
     return Error("Cannot divide by 0")
   } else {
@@ -185,14 +183,14 @@ fn divide_by(a: number, b: number) -> Result<Int, String> {
   }
 }
 
-const value = divide_by(2, 0)? // throws Error
-
-// or handle the error without throwing
-const value, err = divide_by(2, 0)
-if (err == null) {
-  print("ERROR", err.name, err.message, err.stacktrace)
+// handling both paths
+case divide_by(2, 0) {
+  Ok(value) -> print(value)
+  Error(msg) -> printf("Error: {msg}")
 }
-print(value)
+
+// alternatively read the value or throw the error
+const value = divide_by(2, 0)?
 ```
 
 # Features
@@ -202,7 +200,9 @@ print(value)
 ```js
 let foo = "foo";
 
-foo |> Str.reverse() |> Str.repeat(3);
+foo
+|> Str.reverse() 
+|> Str.repeat(3);
 // "oofoofoof"
 ```
 
@@ -286,7 +286,10 @@ let first, ..rest, last = numbers
 
 ```
 assert 1 == 1
-let assert Ok() =
+let value <- assert Some() = get_option()
+let assert Some() value = get_option()
+<!-- let value = assert Some() get_option() -->
+<!-- let value = assert Ok() get_result() -->
 ```
 
 ## Imports
