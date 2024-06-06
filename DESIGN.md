@@ -57,7 +57,7 @@ print("Hello", "World"); // "Hello World\n"
 
 // print by default places newline character
 // this can be omitted by changing end = "\n" to end = ""
-print("Hello World", end = ""); // "Hello World"
+print("Hello World", (end = "")); // "Hello World"
 
 // to format a string with values use printf()
 let a = 1;
@@ -121,6 +121,16 @@ else {
 }
 ```
 
+# Ranges
+
+```js
+0..3 // Generator(0, 1, 2)
+1.2.7 // Generator(2, 4, 6)
+-1.-1.-4 // Generator(-1, -2, -3)
+
+List.range(1, 7, 2) // [2, 4, 6]
+```
+
 # Loops
 
 ## For loop
@@ -134,12 +144,10 @@ for (let i in 0..3) {
 
 const list = [1, 2, 3]
 
-// iterating over items
 for (let item in list) {
   print(item) // Int
 }
 
-// get index and the item
 for (let i, item in List.enum(list)) {
   printf("{i}={item}")
 }
@@ -150,12 +158,8 @@ for (let i, item in List.enum(list)) {
 ```js
 let mut i = 10
 while (i) {
-  i--
+  i = i - 1
 }
-
-// TODO
-break
-continue
 ```
 
 # Functions
@@ -189,7 +193,7 @@ case divide_by(2, 0) {
   Error(msg) -> printf("Error: {msg}")
 }
 
-// alternatively read the value or throw the error
+// alternatively get the value or throw the error
 const value = divide_by(2, 0)?
 ```
 
@@ -197,12 +201,12 @@ const value = divide_by(2, 0)?
 
 ## Pipe operator
 
-```js
-let foo = "foo";
+```gleam
+let foo = "foo"
 
 foo
-|> Str.reverse() 
-|> Str.repeat(3);
+|> Str.reverse()
+|> Str.repeat(3)
 // "oofoofoof"
 ```
 
@@ -294,6 +298,8 @@ let assert Some() value = get_option()
 
 ## Imports
 
+TODO
+
 ## Throwing errors
 
 ```js
@@ -334,4 +340,96 @@ pub class Person {
 
   pub static async public_static_async_method() -> Task<T> {}
 }
+```
+
+# Standard Library (auto import)
+
+## String
+
+```gleam
+Str.repeat(a: String) -> String
+Str.reverse(a: String) -> String
+Str.slice(a: String, start: Int, stop: Int) -> String
+Str.at(a: String, index: Int) -> Result<String, Nil>
+Str.split(a: String, separator: Int, max: Int) -> List<String>
+Str.join(a: List<String>, delimiter: String) -> String
+```
+
+## List
+
+```gleam
+List.new<T>() -> List<T>
+List.clone(a: List<T>) -> List<T>
+List.append(a: List<T>, value: T) -> List<T>
+List.prepend(a: List<T>, value: T) -> List<T>
+List.insert(a: List<T>, value: T, index: Int) -> List<T>
+List.slice(a: List<T>, start: Int, stop: Int, step: Int = 1) -> List<T>
+List.reverse(a: List<T>) -> List<T>
+List.at(a: List<T>, index: Int) -> Result<T, Nil>
+List.map(a: List<T>, func: fn i -> R) -> List<R>
+List.for_each(a: List<T>, func: fn i -> R) -> Nil
+List.filter(a: List<T>) -> List<T>
+List.fold(a: List<T>, initial: R, func: fn i -> R) -> R
+```
+
+## Dict
+
+```gleam
+Dict.new<K, V>() -> Dict<K, V>
+Dict.set<K, V>(d: Dict, k: K, v: T) -> Dict<K, V>
+Dict.get<K, V>(d: Dict, k: K) -> V
+```
+
+## Set
+
+```gleam
+Set.new<T>() -> Set<T>
+Set.from_list<T>(a: List<T>) -> Set<T>
+Set.intesect<T>(a: Set<T>, b: Set<T>) -> Set<T>
+```
+
+## Int
+
+```gleam
+Int.parse(a: String) -> Result<String, Nil>
+Int.to_float(a: Int) -> Float
+```
+
+## Float
+
+```gleam
+Float.parse(a: String) -> Result<Float, Nil>
+Float.truncate(a: Float) -> Int
+Float.floor(a: Float) -> Float
+Float.ceil(a: Float) -> Float
+Float.round(a: Float) -> Float
+```
+
+## Math
+
+```gleam
+Math.PI -> Float
+Math.E -> Float
+Math.TAU -> Float
+Math.sqrt(a: Int | Float) -> Float
+Math.min<T = Int | Float>(a: T, b: T) -> T
+Math.max<T = Int | Float>(a: T, b: T) -> T
+Math.clamp<T = Int | Float>(a: T, b: T) -> T
+Math.abs(a: Int | Float) -> Int
+Math.to_degrees()
+Math.to_radians()
+Math.sin()
+Math.cos()
+Math.tan()
+Math.atan()
+Math.atan2()
+```
+
+## Random
+
+```gleam
+Random.rand() -> Float
+Random.randint(start: Int, stop: Int, step: Int = 1) -> Int
+Random.choice<T>(a: List<T>) -> Result<T, Nil>
+Random.choices(a: List<T>, count: Int, weights: List<Int>) -> Result<List<T>, Nil>
 ```
