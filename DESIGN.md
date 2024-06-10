@@ -254,8 +254,8 @@ fn rgb_color(color: Color) {
 rgb_color(Red)
 
 struct Point {
-  x: Int = 0,
-  y: Int = 0,
+  x: Int = 0
+  y: Int = 0
 }
 
 ```
@@ -286,16 +286,6 @@ let numbers = [1, 2, 3, 4, 5]
 let first, ..rest, last = numbers
 ```
 
-## Assert
-
-```
-assert 1 == 1
-let value <- assert Some() = get_option()
-let assert Some() value = get_option()
-<!-- let value = assert Some() get_option() -->
-<!-- let value = assert Ok() get_result() -->
-```
-
 ## Imports
 
 TODO
@@ -319,26 +309,68 @@ case condition {
 
 ## Classes
 
-```js
-pub class Person {
-  pub name: String
-  pub static public_static_variable = "foo"
-  static private_static_variable: Int = 2
+````js
+class Animal {
+  speak() -> Nil
+} impl {
+  new() {}
 
-  // constructor
+  speak(sentence: String) {
+    println(sentence)
+  }
+}
+
+class Dog {
+  implements Animal
+
+  static limb_amount: Int
+
+  name: String
+
+  speak() -> Nil
+
+} impl {
+  limb_amount = 4
+
   new(name: String) {
     this.name = name
+    this.animal = new Animal()
   }
 
+  // not in interface, private by default
   private_method() {}
 
-  pub public_method() {}
+  // required by Animal interface
+  speak() {
+    this.animal.speak("Woof")
+  }
 
-  static private_static_method() {}
+  // alternatively forward whole Animal implementation
+  forward this.animal
+}
 
-  pub static public_static_method() {}
+interface Reader() {
+  read(input: String) -> String
+}
 
-  pub static async public_static_async_method() -> Task<T> {}
+class SomeReader {
+  implements Reader
+} impl {
+  new() {}
+
+  // required by Reader interface
+  read(input: String) {
+    let output =
+    input
+    |> process_input()
+    |> println()
+
+    return output
+  }
+
+  process_input(input: String) -> String {
+    return "output"
+  }
 }
 ```
 
@@ -353,7 +385,7 @@ Str.slice(a: String, start: Int, stop: Int) -> String
 Str.at(a: String, index: Int) -> Result<String, Nil>
 Str.split(a: String, separator: Int, max: Int) -> List<String>
 Str.join(a: List<String>, delimiter: String) -> String
-```
+````
 
 ## List
 
