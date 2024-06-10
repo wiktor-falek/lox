@@ -399,7 +399,7 @@ List.slice(a: List<T>, start: Int, stop: Int, step: Int = 1) -> List<T>
 List.reverse(a: List<T>) -> List<T>
 List.at(a: List<T>, index: Int) -> Result<T, Nil>
 List.map(a: List<T>, func: fn i -> R) -> List<R>
-List.for_each(a: List<T>, func: fn i -> R) -> Nil
+List.for_each(a: List<T>, func: fn i: T -> R) -> Nil
 List.filter(a: List<T>) -> List<T>
 List.fold(a: List<T>, initial: R, func: fn i -> R) -> R
 ```
