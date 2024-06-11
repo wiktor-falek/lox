@@ -1,20 +1,30 @@
 public class Scanner(string source)
 {
   private string Source = source;
-  private List<Token> Tokens = [];
+  public List<Token> Tokens = [];
   private int Start = 0;
   private int Current = 0;
   private int Line = 1;
 
   public List<Token> ScanTokens()
   {
-    List<Token> arr = [];
-    return arr;
+    while (!IsAtEnd())
+    {
+      Start = Current;
+      ScanToken();
+    }
+
+    Tokens.Add(new Token(TokenType.EOF, "", null, Line));
+
+    return Tokens;
   }
 
   private void ScanToken()
   {
-    char c = Advance();
+    char? c = Advance();
+
+    if (c == null) return;
+
     switch (c)
     {
       case '(': AddToken(TokenType.LEFT_PAREN); break;
@@ -47,7 +57,6 @@ public class Scanner(string source)
         break;
       case ' ':
       case '\r':
-      // TODO: wtf is carriage return
       case '\t':
         break;
       case '\n':
@@ -70,9 +79,18 @@ public class Scanner(string source)
     return Source.ElementAt(Current);
   }
 
-  private char Advance()
+  private char? Advance()
   {
-    return Source.ElementAt(Current++);
+    try
+    {
+      char c = Source.ElementAt(Current);
+      Current++;
+      return c;
+    }
+    catch (ArgumentOutOfRangeException)
+    {
+      return null;
+    }
   }
 
   private void AddToken(TokenType token)
@@ -82,14 +100,14 @@ public class Scanner(string source)
 
   private void AddToken(TokenType type, object? literal)
   {
-    string text = Source.Substring(Start, Current);
+    string text = Source[Start..Current];
     Token token = new(type, text, literal, Line);
-    _ = Tokens.Append(token);
+    Tokens.Add(token);
   }
 
   private bool IsAtEnd()
   {
-    return Current > Source.Length;
+    return Current >= Source.Length;
   }
 
   private bool Match(char expected)

@@ -1,4 +1,6 @@
-﻿class Lox
+﻿using System.Diagnostics;
+
+class Lox
 {
   public static bool hadError = false;
 

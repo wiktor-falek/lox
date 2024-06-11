@@ -15,6 +15,6 @@ public class Token
 
   override public string ToString()
   {
-    return $"{Type} {Lexeme} {Literal}";
+    return $"Token({Type}, \"{Lexeme}\", {Literal ?? "null"})";
   }
 }
