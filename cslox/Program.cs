@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-class Lox
+﻿class Lox
 {
   public static bool hadError = false;
 
@@ -8,7 +6,7 @@ class Lox
   {
     if (args.Length > 1)
     {
-      Console.WriteLine("Usage: jlox [script]");
+      Console.WriteLine("Usage: cslox [script]");
       Environment.Exit(64);
     }
     else if (args.Length == 1)
