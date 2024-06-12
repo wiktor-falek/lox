@@ -1,12 +1,29 @@
-using System.Globalization;
-
 public class Scanner(string source)
 {
-  private string Source = source;
-  public List<Token> Tokens = [];
+  private readonly List<Token> Tokens = [];
+  private readonly string Source = source;
   private int Start = 0;
   private int Current = 0;
   private int Line = 1;
+  private readonly Dictionary<string, TokenType> Keywords = new()
+  {
+      {"and", TokenType.AND},
+      {"class", TokenType.CLASS},
+      {"else", TokenType.ELSE},
+      {"false", TokenType.FALSE},
+      {"for", TokenType.FOR},
+      {"fun", TokenType.FUN},
+      {"if", TokenType.IF},
+      {"nil", TokenType.NIL},
+      {"or", TokenType.OR},
+      {"print", TokenType.PRINT},
+      {"return", TokenType.RETURN},
+      {"super", TokenType.SUPER},
+      {"this", TokenType.THIS},
+      {"true", TokenType.TRUE},
+      {"var", TokenType.VAR},
+      {"while", TokenType.WHILE},
+  };
 
   public List<Token> ScanTokens()
   {
@@ -68,6 +85,10 @@ public class Scanner(string source)
         {
           Number();
         }
+        else if (char.IsLetter(c)) // or _
+        {
+          Identifier();
+        }
         else
         {
           Lox.Error(Line, $"Unexpected character: {c}"); break;
@@ -111,6 +132,19 @@ public class Scanner(string source)
 
     float value = float.Parse(Source[Start..Current]);
     AddToken(TokenType.NUMBER, value);
+  }
+
+  private void Identifier()
+  {
+    while (char.IsLetterOrDigit(Peek())) Advance();
+
+    string text = Source[Start..Current];
+
+    TokenType type = Keywords.TryGetValue(text, out var keyword)
+    ? keyword
+    : TokenType.IDENTIFIER;
+
+    AddToken(type);
   }
 
   private char Peek()
