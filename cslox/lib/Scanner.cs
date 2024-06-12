@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public class Scanner(string source)
 {
   private string Source = source;
@@ -21,9 +23,7 @@ public class Scanner(string source)
 
   private void ScanToken()
   {
-    char? c = Advance();
-
-    if (c == null) return;
+    char c = Advance();
 
     switch (c)
     {
@@ -64,13 +64,53 @@ public class Scanner(string source)
         break;
       case '"': String(); break;
       default:
-        Lox.Error(Line, $"Unexpected character: {c}"); break;
+        if (char.IsDigit(c))
+        {
+          Number();
+        }
+        else
+        {
+          Lox.Error(Line, $"Unexpected character: {c}"); break;
+        }
+        break;
     }
   }
 
   private void String()
   {
-    // TODO
+    while (Peek() != '"' && !IsAtEnd())
+    {
+      if (Peek() == '\n') Line++;
+      Advance();
+    }
+
+    if (IsAtEnd())
+    {
+      Lox.Error(Line, "Unterminated string.");
+      return;
+    }
+
+    // Closing "
+    Advance();
+
+    string value = Source[(Start + 1)..(Current - 1)];
+    AddToken(TokenType.STRING, value);
+  }
+
+  private void Number()
+  {
+    while (char.IsDigit(Peek())) Advance();
+
+    if (Peek() == '.' && char.IsDigit(PeekNext()))
+    {
+      // consume '.'
+      Advance();
+
+      while (char.IsDigit(Peek())) Advance();
+    }
+
+    float value = float.Parse(Source[Start..Current]);
+    AddToken(TokenType.NUMBER, value);
   }
 
   private char Peek()
@@ -79,18 +119,15 @@ public class Scanner(string source)
     return Source.ElementAt(Current);
   }
 
-  private char? Advance()
+  private char PeekNext()
   {
-    try
-    {
-      char c = Source.ElementAt(Current);
-      Current++;
-      return c;
-    }
-    catch (ArgumentOutOfRangeException)
-    {
-      return null;
-    }
+    if (Current + 1 >= Source.Length) return '\0';
+    return Source.ElementAt(Current + 1);
+  }
+
+  private char Advance()
+  {
+    return Source.ElementAt(Current++);
   }
 
   private void AddToken(TokenType token)
