@@ -57,7 +57,7 @@ class GenerateAst
 
       if (field != last)
       {
-        writer.Write($"{fieldType} {fieldName},");
+        writer.Write($"{fieldType} {fieldName}, ");
       }
       else
       {
