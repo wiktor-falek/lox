@@ -20,17 +20,21 @@ class GenerateAst
   private static void DefineAst(string outputDir, string baseName, List<string> types)
   {
     string path = Path.Combine(outputDir, $"{baseName}.cs");
-    using (StreamWriter writer = new(path))
+    using StreamWriter writer = new(path);
+
+    DefineVisitor(writer, baseName, types);
+
+    writer.WriteLine($"abstract public class {baseName}");
+    writer.WriteLine("{");
+    writer.WriteLine("  abstract public R Accept<R>(IVisitor<R> visitor);");
+    writer.WriteLine("}");
+
+    foreach (string type in types)
     {
-      writer.WriteLine($"abstract public class {baseName} {{}}");
 
-      foreach (string type in types)
-      {
-
-        string className = type.Split(":")[0].Trim();
-        string fields = type.Split(":")[1].Trim();
-        DefineType(writer, baseName, className, fields);
-      }
+      string className = type.Split(":")[0].Trim();
+      string fields = type.Split(":")[1].Trim();
+      DefineType(writer, baseName, className, fields);
     }
   }
 
@@ -72,6 +76,24 @@ class GenerateAst
       writer.WriteLine($"    {capitalizedFieldName} = {fieldName};");
     }
     writer.WriteLine("  }");
+
+    writer.WriteLine("  override public R Accept<R>(IVisitor<R> visitor)");
+    writer.WriteLine("  {");
+    writer.WriteLine($"    return visitor.Visit{className}{baseName}(this);");
+    writer.WriteLine("  }");
+
     writer.WriteLine("}");
+  }
+
+  private static void DefineVisitor(StreamWriter writer, string baseName, List<string> types)
+  {
+    writer.WriteLine("public interface IVisitor<R>");
+    writer.WriteLine("{");
+    foreach (string type in types)
+    {
+      string className = type.Split(":")[0].Trim();
+      writer.WriteLine($"  R Visit{className}{baseName}({className} {baseName.ToLower()});");
+    }
+    writer.WriteLine("}\n");
   }
 }
