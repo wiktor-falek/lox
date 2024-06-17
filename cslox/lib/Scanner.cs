@@ -85,7 +85,7 @@ public class Scanner(string source)
         {
           Number();
         }
-        else if (char.IsLetter(c)) // or _
+        else if (char.IsLetter(c))
         {
           Identifier();
         }
