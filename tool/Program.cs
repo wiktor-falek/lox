@@ -49,9 +49,9 @@ class GenerateAst
       string fieldType = field.Split(" ")[0];
       string fieldName = field.Split(" ")[1];
       string capitalizedFieldName = fieldName[..1].ToUpper() + fieldName[1..];
-      writer.WriteLine($"  readonly {fieldType} {capitalizedFieldName};");
+      writer.WriteLine($"  public readonly {fieldType} {capitalizedFieldName};");
     }
-    writer.Write($"  {className}(");
+    writer.Write($"  public {className}(");
 
     string last = fields.Last();
     foreach (string field in fields)

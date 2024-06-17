@@ -1,9 +1,9 @@
 public class Token
 {
-  readonly TokenType Type;
-  readonly string Lexeme;
-  readonly object? Literal;
-  readonly int Line;
+  public readonly TokenType Type;
+  public readonly string Lexeme;
+  public readonly object? Literal;
+  public readonly int Line;
 
   public Token(TokenType type, string lexeme, object? literal, int line)
   {

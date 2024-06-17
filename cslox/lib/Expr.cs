@@ -13,10 +13,10 @@ abstract public class Expr
 
 public class Binary : Expr
 {
-  readonly Expr Left;
-  readonly Token Op;
-  readonly Expr Right;
-  Binary(Expr left, Token op, Expr right)  {
+  public readonly Expr Left;
+  public readonly Token Op;
+  public readonly Expr Right;
+  public Binary(Expr left, Token op, Expr right)  {
     Left = left;
     Op = op;
     Right = right;
@@ -29,8 +29,8 @@ public class Binary : Expr
 
 public class Grouping : Expr
 {
-  readonly Expr Expression;
-  Grouping(Expr expression)  {
+  public readonly Expr Expression;
+  public Grouping(Expr expression)  {
     Expression = expression;
   }
   override public R Accept<R>(IVisitor<R> visitor)
@@ -41,8 +41,8 @@ public class Grouping : Expr
 
 public class Literal : Expr
 {
-  readonly object Value;
-  Literal(object value)  {
+  public readonly object Value;
+  public Literal(object value)  {
     Value = value;
   }
   override public R Accept<R>(IVisitor<R> visitor)
@@ -53,9 +53,9 @@ public class Literal : Expr
 
 public class Unary : Expr
 {
-  readonly Token Op;
-  readonly Expr Right;
-  Unary(Token op, Expr right)  {
+  public readonly Token Op;
+  public readonly Expr Right;
+  public Unary(Token op, Expr right)  {
     Op = op;
     Right = right;
   }
