@@ -1,7 +1,14 @@
-expression     → literal
-               | unary
-               | binary
-               | grouping ;
+// expression     → literal
+//                | unary
+//                | binary
+//                | grouping ;
+expression     → ... ;
+equality       → ... ;
+comparison     → ... ;
+term           → ... ;
+factor         → ... ;
+unary          → ... ;
+primary        → ... ;
 
 literal        → NUMBER | STRING | "true" | "false" | "nil" ;
 grouping       → "(" expression ")" ;
