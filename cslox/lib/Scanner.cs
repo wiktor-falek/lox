@@ -1,3 +1,5 @@
+using static TokenType;
+
 public class Scanner(string source)
 {
   private readonly List<Token> Tokens = [];
@@ -7,22 +9,22 @@ public class Scanner(string source)
   private int Line = 1;
   private readonly Dictionary<string, TokenType> Keywords = new()
   {
-      {"and", TokenType.AND},
-      {"class", TokenType.CLASS},
-      {"else", TokenType.ELSE},
-      {"false", TokenType.FALSE},
-      {"for", TokenType.FOR},
-      {"fun", TokenType.FUN},
-      {"if", TokenType.IF},
-      {"nil", TokenType.NIL},
-      {"or", TokenType.OR},
-      {"print", TokenType.PRINT},
-      {"return", TokenType.RETURN},
-      {"super", TokenType.SUPER},
-      {"this", TokenType.THIS},
-      {"true", TokenType.TRUE},
-      {"var", TokenType.VAR},
-      {"while", TokenType.WHILE},
+      {"and", AND},
+      {"class", CLASS},
+      {"else", ELSE},
+      {"false", FALSE},
+      {"for", FOR},
+      {"fun", FUN},
+      {"if", IF},
+      {"nil", NIL},
+      {"or", OR},
+      {"print", PRINT},
+      {"return", RETURN},
+      {"super", SUPER},
+      {"this", THIS},
+      {"true", TRUE},
+      {"var", VAR},
+      {"while", WHILE},
   };
 
   public List<Token> ScanTokens()
@@ -33,7 +35,7 @@ public class Scanner(string source)
       ScanToken();
     }
 
-    Tokens.Add(new Token(TokenType.EOF, "", null, Line));
+    Tokens.Add(new Token(EOF, "", null, Line));
 
     return Tokens;
   }
@@ -44,24 +46,24 @@ public class Scanner(string source)
 
     switch (c)
     {
-      case '(': AddToken(TokenType.LEFT_PAREN); break;
-      case ')': AddToken(TokenType.RIGHT_PAREN); break;
-      case '{': AddToken(TokenType.LEFT_BRACE); break;
-      case '}': AddToken(TokenType.RIGHT_BRACE); break;
-      case ',': AddToken(TokenType.COMMA); break;
-      case '.': AddToken(TokenType.DOT); break;
-      case '-': AddToken(TokenType.MINUS); break;
-      case '+': AddToken(TokenType.PLUS); break;
-      case ';': AddToken(TokenType.SEMICOLON); break;
-      case '*': AddToken(TokenType.STAR); break;
+      case '(': AddToken(LEFT_PAREN); break;
+      case ')': AddToken(RIGHT_PAREN); break;
+      case '{': AddToken(LEFT_BRACE); break;
+      case '}': AddToken(RIGHT_BRACE); break;
+      case ',': AddToken(COMMA); break;
+      case '.': AddToken(DOT); break;
+      case '-': AddToken(MINUS); break;
+      case '+': AddToken(PLUS); break;
+      case ';': AddToken(SEMICOLON); break;
+      case '*': AddToken(STAR); break;
       case '!':
-        AddToken(Match('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
+        AddToken(Match('=') ? BANG_EQUAL : BANG); break;
       case '=':
-        AddToken(Match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
+        AddToken(Match('=') ? EQUAL_EQUAL : EQUAL); break;
       case '<':
-        AddToken(Match('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break;
+        AddToken(Match('=') ? LESS_EQUAL : LESS); break;
       case '>':
-        AddToken(Match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
+        AddToken(Match('=') ? GREATER_EQUAL : GREATER); break;
       case '/':
         if (Match('/'))
         {
@@ -69,7 +71,7 @@ public class Scanner(string source)
         }
         else
         {
-          AddToken(TokenType.SLASH);
+          AddToken(SLASH);
         }
         break;
       case ' ':
@@ -115,7 +117,7 @@ public class Scanner(string source)
     Advance();
 
     string value = Source[(Start + 1)..(Current - 1)];
-    AddToken(TokenType.STRING, value);
+    AddToken(STRING, value);
   }
 
   private void Number()
@@ -131,7 +133,7 @@ public class Scanner(string source)
     }
 
     float value = float.Parse(Source[Start..Current]);
-    AddToken(TokenType.NUMBER, value);
+    AddToken(NUMBER, value);
   }
 
   private void Identifier()
@@ -142,7 +144,7 @@ public class Scanner(string source)
 
     TokenType type = Keywords.TryGetValue(text, out var keyword)
     ? keyword
-    : TokenType.IDENTIFIER;
+    : IDENTIFIER;
 
     AddToken(type);
   }

@@ -41,8 +41,8 @@ public class Grouping : Expr
 
 public class Literal : Expr
 {
-  public readonly object Value;
-  public Literal(object value)  {
+  public readonly object? Value;
+  public Literal(object? value)  {
     Value = value;
   }
   override public R Accept<R>(IVisitor<R> visitor)

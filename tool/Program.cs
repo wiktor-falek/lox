@@ -12,7 +12,7 @@ class GenerateAst
     DefineAst(outputDir, "Expr", [
       "Binary   : Expr left, Token op, Expr right",
       "Grouping : Expr expression",
-      "Literal  : object value",
+      "Literal  : object? value",
       "Unary    : Token op, Expr right"
     ]);
   }
