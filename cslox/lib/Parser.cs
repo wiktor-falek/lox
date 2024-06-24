@@ -1,7 +1,7 @@
 
 using static TokenType;
 
-class Parser
+public class Parser
 {
   private readonly List<Token> Tokens;
   private int Current = 0;
@@ -52,7 +52,8 @@ class Parser
 
   private Token Consume(TokenType type, string message)
   {
-    throw new NotImplementedException();
+    // check, return advance
+    // throw error -> enter panic mode, report more errors
   }
 
   private Expr Expression()
@@ -130,7 +131,6 @@ class Parser
 
   private Expr Primary()
   {
-    // grouping
     if (Match(TRUE)) return new Literal(true);
     if (Match(FALSE)) return new Literal(false);
     if (Match(NIL)) return new Literal(null);
