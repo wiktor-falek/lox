@@ -1,6 +1,8 @@
-﻿class Lox
+﻿using static TokenType;
+
+class Lox
 {
-  public static bool hadError = false;
+  public static bool HadError = false;
 
   static void Main(string[] args)
   {
@@ -37,7 +39,7 @@
       StreamReader sr = new(Path.GetFullPath(fileName));
       string content = sr.ReadToEnd();
       Run(content);
-      if (hadError) Environment.Exit(65);
+      if (HadError) Environment.Exit(65);
     }
     catch (Exception e)
     {
@@ -53,7 +55,7 @@
       string? line = Console.ReadLine();
       if (line == null) break;
       Run(line);
-      hadError = false;
+      HadError = false;
     }
   }
 
@@ -62,9 +64,21 @@
     Report(line, "", message);
   }
 
+  public static void Error(Token token, string message)
+  {
+    if (token.Type == EOF)
+    {
+      Report(token.Line, " at end", message);
+    }
+    else
+    {
+      Report(token.Line, $" at '{token.Lexeme}'", message);
+    }
+  }
+
   public static void Report(int line, string where, string message)
   {
     Console.Error.WriteLine($"[line {line}] Error {where}: {message}");
-    hadError = true;
+    HadError = true;
   }
 }

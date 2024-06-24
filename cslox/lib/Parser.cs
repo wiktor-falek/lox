@@ -1,8 +1,10 @@
-
 using static TokenType;
+
+class ParseError : SystemException { }
 
 public class Parser
 {
+
   private readonly List<Token> Tokens;
   private int Current = 0;
 
@@ -52,8 +54,15 @@ public class Parser
 
   private Token Consume(TokenType type, string message)
   {
-    // check, return advance
-    // throw error -> enter panic mode, report more errors
+    if (Check(type)) return Advance();
+
+    throw Error(Peek(), message);
+  }
+
+  private static ParseError Error(Token token, string message)
+  {
+    Lox.Error(token, message);
+    return new ParseError();
   }
 
   private Expr Expression()
