@@ -4,9 +4,12 @@ using R = System.String;
 
 class AstPrinter : IVisitor<R>
 {
-  public void Print(Expr expr)
+  public void Print(Expr? expr)
   {
-    Console.WriteLine(expr.Accept(this));
+    if (expr is not null)
+    {
+      Console.WriteLine(expr.Accept(this));
+    }
   }
 
   R IVisitor<R>.VisitBinaryExpr(Binary expr)

@@ -1,16 +1,23 @@
 using static TokenType;
 
-class ParseError : SystemException { }
+public class ParseError : SystemException { }
 
-public class Parser
+public class Parser(List<Token> tokens)
 {
 
-  private readonly List<Token> Tokens;
+  private readonly List<Token> Tokens = tokens;
   private int Current = 0;
 
-  Parser(List<Token> tokens)
+  public Expr? Parse()
   {
-    Tokens = tokens;
+    try
+    {
+      return Expression();
+    }
+    catch (ParseError)
+    {
+      return null;
+    }
   }
 
   private bool Match(params TokenType[] types)
@@ -63,6 +70,31 @@ public class Parser
   {
     Lox.Error(token, message);
     return new ParseError();
+  }
+
+  private void Synchronize()
+  {
+    Advance();
+
+    while (!IsAtEnd())
+    {
+      if (Previous().Type == SEMICOLON) return;
+
+      switch (Peek().Type)
+      {
+        case CLASS:
+        case FUN:
+        case VAR:
+        case FOR:
+        case IF:
+        case WHILE:
+        case PRINT:
+        case RETURN:
+          return;
+      }
+    }
+
+    Advance();
   }
 
   private Expr Expression()
@@ -156,6 +188,6 @@ public class Parser
       return new Grouping(expr);
     }
 
-    throw new Exception("TODO");
+    throw Error(Peek(), "Expect expression.");
   }
 }
