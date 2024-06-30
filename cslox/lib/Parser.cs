@@ -4,7 +4,6 @@ public class ParseError : SystemException { }
 
 public class Parser(List<Token> tokens)
 {
-
   private readonly List<Token> Tokens = tokens;
   private int Current = 0;
 
@@ -99,7 +98,26 @@ public class Parser(List<Token> tokens)
 
   private Expr Expression()
   {
-    return Equality();
+    return Ternary();
+  }
+
+  private Expr Ternary()
+  {
+    Expr expr = Equality();
+
+    if (Match(QUESTION_MARK))
+    {
+      Expr left = Expression();
+
+      Consume(COLON, "Expect ':' in ternary.");
+      Token op = Previous();
+
+      Expr right = Ternary();
+
+      return new Binary(left, op, right);
+    }
+
+    return expr;
   }
 
   private Expr Equality()

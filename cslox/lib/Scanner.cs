@@ -54,8 +54,10 @@ public class Scanner(string source)
       case '.': AddToken(DOT); break;
       case '-': AddToken(MINUS); break;
       case '+': AddToken(PLUS); break;
+      case ':': AddToken(COLON); break;
       case ';': AddToken(SEMICOLON); break;
       case '*': AddToken(STAR); break;
+      case '?': AddToken(QUESTION_MARK); break;
       case '!':
         AddToken(Match('=') ? BANG_EQUAL : BANG); break;
       case '=':
