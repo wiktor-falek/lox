@@ -13,7 +13,8 @@ class GenerateAst
       "Binary   : Expr left, Token op, Expr right",
       "Grouping : Expr expression",
       "Literal  : object? value",
-      "Unary    : Token op, Expr right"
+      "Unary    : Token op, Expr right",
+      "Comma    : List<Expr> expressions"
     ]);
   }
 

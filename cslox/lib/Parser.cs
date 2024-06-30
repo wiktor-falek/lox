@@ -98,7 +98,27 @@ public class Parser(List<Token> tokens)
 
   private Expr Expression()
   {
-    return Ternary();
+    return Comma();
+  }
+
+  private Expr Comma()
+  {
+    Expr expr = Ternary();
+
+    List<Expr> expressions = [expr];
+
+    while (Match(COMMA))
+    {
+      Expr nextExpr = Ternary();
+      expressions.Add(nextExpr);
+    }
+
+    if (expressions.Count > 1)
+    {
+      return new Comma(expressions);
+    }
+
+    return expr;
   }
 
   private Expr Ternary()

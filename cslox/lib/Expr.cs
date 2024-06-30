@@ -4,6 +4,7 @@ public interface IVisitor<R>
   R VisitGroupingExpr(Grouping expr);
   R VisitLiteralExpr(Literal expr);
   R VisitUnaryExpr(Unary expr);
+  R VisitCommaExpr(Comma expr);
 }
 
 abstract public class Expr
@@ -62,5 +63,17 @@ public class Unary : Expr
   override public R Accept<R>(IVisitor<R> visitor)
   {
     return visitor.VisitUnaryExpr(this);
+  }
+}
+
+public class Comma : Expr
+{
+  public readonly List<Expr> Expressions;
+  public Comma(List<Expr> expressions)  {
+    Expressions = expressions;
+  }
+  override public R Accept<R>(IVisitor<R> visitor)
+  {
+    return visitor.VisitCommaExpr(this);
   }
 }

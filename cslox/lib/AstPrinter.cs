@@ -39,6 +39,11 @@ class AstPrinter : IVisitor<R>
     return Parenthesize(expr.Op.Lexeme, expr.Right);
   }
 
+  R IVisitor<R>.VisitCommaExpr(Comma expr)
+  {
+    return Parenthesize("comma", [.. expr.Expressions]);
+  }
+
   private string Parenthesize(string name, params Expr[] exprs)
   {
     StringBuilder builder = new();
