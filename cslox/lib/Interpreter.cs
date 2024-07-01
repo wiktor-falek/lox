@@ -76,6 +76,7 @@ public class Interpreter : IVisitor<object?>
         return (double)left * (double)right;
       case SLASH:
         CheckNumberOperands(expr.Op, left, right);
+        if ((double)right == 0) throw new RuntimeError(expr.Op, "Cannot divide by 0.");
         return (double)left / (double)right;
       case GREATER:
         CheckNumberOperands(expr.Op, left, right);
