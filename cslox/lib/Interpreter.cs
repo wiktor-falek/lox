@@ -51,11 +51,6 @@ public class Interpreter : IVisitor<object?>
     object? left = Evaluate(expr.Left);
     object? right = Evaluate(expr.Right);
 
-    if (left is null || right is null)
-    {
-      return null;
-    }
-
     switch (expr.Op.Type)
     {
       case PLUS:
@@ -70,26 +65,26 @@ public class Interpreter : IVisitor<object?>
         throw new RuntimeError(expr.Op, "Operands must be two numbers or two strings.");
       case MINUS:
         CheckNumberOperands(expr.Op, left, right);
-        return (double)left - (double)right;
+        return (double)left! - (double)right!;
       case STAR:
         CheckNumberOperands(expr.Op, left, right);
-        return (double)left * (double)right;
+        return (double)left! * (double)right!;
       case SLASH:
         CheckNumberOperands(expr.Op, left, right);
-        if ((double)right == 0) throw new RuntimeError(expr.Op, "Cannot divide by 0.");
-        return (double)left / (double)right;
+        if ((double)right! == 0) throw new RuntimeError(expr.Op, "Cannot divide by 0.");
+        return (double)left! / (double)right!;
       case GREATER:
         CheckNumberOperands(expr.Op, left, right);
-        return (double)left > (double)right;
+        return (double)left! > (double)right!;
       case GREATER_EQUAL:
         CheckNumberOperands(expr.Op, left, right);
-        return (double)left >= (double)right;
+        return (double)left! >= (double)right!;
       case LESS:
         CheckNumberOperands(expr.Op, left, right);
-        return (double)left < (double)right;
+        return (double)left! < (double)right!;
       case LESS_EQUAL:
         CheckNumberOperands(expr.Op, left, right);
-        return (double)left <= (double)right;
+        return (double)left! <= (double)right!;
       case EQUAL_EQUAL:
         return IsEqual(left, right);
       case BANG_EQUAL:
