@@ -130,11 +130,10 @@ public class Parser(List<Token> tokens)
       Expr left = Expression();
 
       Consume(COLON, "Expect ':' in ternary.");
-      Token op = Previous();
 
       Expr right = Ternary();
 
-      return new Binary(left, op, right);
+      return new Ternary(expr, left, right);
     }
 
     return expr;

@@ -14,6 +14,7 @@ class GenerateAst
       "Grouping : Expr expression",
       "Literal  : object? value",
       "Unary    : Token op, Expr right",
+      "Ternary  : Expr condition, Expr trueExpr, Expr falseExpr",
       "Comma    : List<Expr> expressions"
     ]);
   }

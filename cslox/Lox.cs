@@ -2,7 +2,9 @@
 
 class Lox
 {
-  public static bool HadError = false;
+  private readonly static Interpreter Interpreter = new();
+  static bool HadError = false;
+  static bool HadRuntimeError = false;
 
   static void Main(string[] args)
   {
@@ -30,7 +32,10 @@ class Lox
     Parser parser = new(tokens);
     Expr? expression = parser.Parse();
 
-    new AstPrinter().Print(expression);
+    if (expression is not null)
+    {
+      Interpreter.Interpret(expression);
+    }
   }
 
   static void RunFile(string fileName)
@@ -41,6 +46,7 @@ class Lox
       string content = sr.ReadToEnd();
       Run(content);
       if (HadError) Environment.Exit(65);
+      if (HadRuntimeError) Environment.Exit(70);
     }
     catch (Exception e)
     {
@@ -75,6 +81,12 @@ class Lox
     {
       Report(token.Line, $"at '{token.Lexeme}'", message);
     }
+  }
+
+  public static void RuntimeError(RuntimeError error)
+  {
+    Console.Error.Write(error.Message + $"\n[line {error.Token.Line}]");
+    HadRuntimeError = true;
   }
 
   static void Report(int line, string where, string message)

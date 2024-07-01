@@ -4,6 +4,7 @@ public interface IVisitor<R>
   R VisitGroupingExpr(Grouping expr);
   R VisitLiteralExpr(Literal expr);
   R VisitUnaryExpr(Unary expr);
+  R VisitTernaryExpr(Ternary expr);
   R VisitCommaExpr(Comma expr);
 }
 
@@ -63,6 +64,22 @@ public class Unary : Expr
   override public R Accept<R>(IVisitor<R> visitor)
   {
     return visitor.VisitUnaryExpr(this);
+  }
+}
+
+public class Ternary : Expr
+{
+  public readonly Expr Condition;
+  public readonly Expr TrueExpr;
+  public readonly Expr FalseExpr;
+  public Ternary(Expr condition, Expr trueExpr, Expr falseExpr)  {
+    Condition = condition;
+    TrueExpr = trueExpr;
+    FalseExpr = falseExpr;
+  }
+  override public R Accept<R>(IVisitor<R> visitor)
+  {
+    return visitor.VisitTernaryExpr(this);
   }
 }
 

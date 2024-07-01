@@ -134,7 +134,7 @@ public class Scanner(string source)
       while (char.IsDigit(Peek())) Advance();
     }
 
-    float value = float.Parse(Source[Start..Current]);
+    double value = double.Parse(Source[Start..Current]);
     AddToken(NUMBER, value);
   }
 

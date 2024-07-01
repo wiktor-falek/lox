@@ -39,6 +39,11 @@ class AstPrinter : IVisitor<R>
     return Parenthesize(expr.Op.Lexeme, expr.Right);
   }
 
+  R IVisitor<R>.VisitTernaryExpr(Ternary expr)
+  {
+    return Parenthesize("ternary", expr.Condition, expr.TrueExpr, expr.FalseExpr);
+  }
+
   R IVisitor<R>.VisitCommaExpr(Comma expr)
   {
     return Parenthesize("comma", [.. expr.Expressions]);
