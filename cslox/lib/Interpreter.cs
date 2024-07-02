@@ -7,6 +7,8 @@ public class RuntimeError(Token token, string message) : SystemException(message
 
 public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
+  private readonly RuntimeEnvironment Environment = new();
+
   public void Interpret(List<Stmt> statements)
   {
     try
@@ -36,6 +38,18 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     object? value = Evaluate(stmt.Expression);
     Console.WriteLine(Stringify(value));
+  }
+
+  void IStmtVisitor.VisitVarStmt(VarStmt stmt)
+  {
+    object? value = null;
+
+    if (stmt.Initializer is not null)
+    {
+      value = Evaluate(stmt.Initializer);
+    }
+
+    Environment.Define(stmt.Name.Lexeme, value);
   }
 
   object? IExprVisitor<object?>.VisitLiteralExpr(LiteralExpr expr)
@@ -131,6 +145,11 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     }
 
     return lastExprValue;
+  }
+
+  object? IExprVisitor<object?>.VisitVariableExpr(VariableExpr expr)
+  {
+    return Environment.Get(expr.Name);
   }
 
   private static string Stringify(object? obj)

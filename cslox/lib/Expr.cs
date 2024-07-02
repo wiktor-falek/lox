@@ -6,6 +6,7 @@ public interface IExprVisitor<R>
   R VisitUnaryExpr(UnaryExpr expr);
   R VisitTernaryExpr(TernaryExpr expr);
   R VisitCommaExpr(CommaExpr expr);
+  R VisitVariableExpr(VariableExpr expr);
 }
 
 abstract public class Expr
@@ -92,5 +93,17 @@ public class CommaExpr : Expr
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitCommaExpr(this);
+  }
+}
+
+public class VariableExpr : Expr
+{
+  public readonly Token Name;
+  public VariableExpr(Token name)  {
+    Name = name;
+  }
+  override public R Accept<R>(IExprVisitor<R> visitor)
+  {
+    return visitor.VisitVariableExpr(this);
   }
 }

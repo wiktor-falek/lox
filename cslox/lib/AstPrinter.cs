@@ -49,6 +49,11 @@ class AstPrinter : IExprVisitor<R>
     return Parenthesize("comma", [.. expr.Expressions]);
   }
 
+  public string VisitVariableExpr(VariableExpr expr)
+  {
+    throw new NotImplementedException();
+  }
+
   private string Parenthesize(string name, params Expr[] exprs)
   {
     StringBuilder builder = new();
@@ -63,4 +68,5 @@ class AstPrinter : IExprVisitor<R>
 
     return builder.ToString();
   }
+
 }

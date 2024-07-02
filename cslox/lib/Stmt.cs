@@ -2,6 +2,7 @@ public interface IStmtVisitor
 {
   void VisitExprStmt(ExprStmt stmt);
   void VisitPrintStmt(PrintStmt stmt);
+  void VisitVarStmt(VarStmt stmt);
 }
 
 abstract public class Stmt
@@ -30,5 +31,19 @@ public class PrintStmt : Stmt
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitPrintStmt(this);
+  }
+}
+
+public class VarStmt : Stmt
+{
+  public readonly Token Name;
+  public readonly Expr? Initializer;
+  public VarStmt(Token name, Expr? initializer)  {
+    Name = name;
+    Initializer = initializer;
+  }
+  override public void Accept(IStmtVisitor visitor)
+  {
+    visitor.VisitVarStmt(this);
   }
 }

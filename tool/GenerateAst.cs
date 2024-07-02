@@ -15,12 +15,14 @@ class GenerateAst
       "LiteralExpr  : object? value",
       "UnaryExpr    : Token op, Expr right",
       "TernaryExpr  : Expr condition, Expr trueExpr, Expr falseExpr",
-      "CommaExpr    : List<Expr> expressions"
+      "CommaExpr    : List<Expr> expressions",
+      "VariableExpr : Token name",
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [
-      "ExprStmt : Expr expression",
+      "ExprStmt  : Expr expression",
       "PrintStmt : Expr expression",
+      "VarStmt   : Token name, Expr? initializer",
     ]);
   }
 
