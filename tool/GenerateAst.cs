@@ -10,6 +10,7 @@ class GenerateAst
 
     string outputDir = args[0];
     DefineAst(outputDir, "Expr", "object?", [
+      "AssignExpr   : Token name, Expr value",
       "BinaryExpr   : Expr left, Token op, Expr right",
       "GroupingExpr : Expr expression",
       "LiteralExpr  : object? value",

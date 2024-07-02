@@ -1,5 +1,6 @@
 public interface IExprVisitor<R>
 {
+  R VisitAssignExpr(AssignExpr expr);
   R VisitBinaryExpr(BinaryExpr expr);
   R VisitGroupingExpr(GroupingExpr expr);
   R VisitLiteralExpr(LiteralExpr expr);
@@ -12,6 +13,20 @@ public interface IExprVisitor<R>
 abstract public class Expr
 {
   abstract public R Accept<R>(IExprVisitor<R> visitor);
+}
+
+public class AssignExpr : Expr
+{
+  public readonly Token Name;
+  public readonly Expr Value;
+  public AssignExpr(Token name, Expr value)  {
+    Name = name;
+    Value = value;
+  }
+  override public R Accept<R>(IExprVisitor<R> visitor)
+  {
+    return visitor.VisitAssignExpr(this);
+  }
 }
 
 public class BinaryExpr : Expr

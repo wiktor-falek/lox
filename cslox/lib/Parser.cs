@@ -148,7 +148,28 @@ public class Parser(List<Token> tokens)
 
   private Expr Expression()
   {
-    return Comma();
+    return Assignment();
+  }
+
+  private Expr Assignment()
+  {
+    Expr expr = Comma();
+
+    if (Match(EQUAL))
+    {
+      Token equals = Previous();
+      Expr value = Assignment();
+
+      if (expr is VariableExpr variableExpr)
+      {
+        Token name = variableExpr.Name;
+        return new AssignExpr(name, value);
+      }
+
+      Error(equals, "Invalid assignment target.");
+    }
+
+    return expr;
   }
 
   private Expr Comma()

@@ -52,6 +52,13 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Environment.Define(stmt.Name.Lexeme, value);
   }
 
+  object? IExprVisitor<object?>.VisitAssignExpr(AssignExpr expr)
+  {
+    object? value = Evaluate(expr.Value); 
+    Environment.Assign(expr.Name, value);
+    return value;
+  }
+
   object? IExprVisitor<object?>.VisitLiteralExpr(LiteralExpr expr)
   {
     return expr.Value;

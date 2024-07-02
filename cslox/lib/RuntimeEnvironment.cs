@@ -16,4 +16,16 @@ class RuntimeEnvironment
   {
     values[name] = value;
   }
+
+  public void Assign(Token name, object? value)
+  {
+    if (values.ContainsKey(name.Lexeme))
+    {
+      values[name.Lexeme] = value;
+    }
+    else
+    {
+      throw new RuntimeError(name, $"Undefined variable '{name.Lexeme}'.");
+    }
+  }
 }

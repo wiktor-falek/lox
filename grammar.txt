@@ -7,7 +7,9 @@ exprStmt       → expression ";" ;
 printStmt      → "print" expression ";" ;
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 
-expression     → comma ;
+expression     → assignment ;
+assignment     → IDENTIFIER "=" assignment ;
+               | comma ;
 comma          → ternary ( "," ternary )* ;
 ternary        → equality ( "?" expression  ":" ternary )? ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;

@@ -12,6 +12,11 @@ class AstPrinter : IExprVisitor<R>
     }
   }
 
+  R IExprVisitor<R>.VisitAssignExpr(AssignExpr expr)
+  {
+    throw new NotImplementedException();
+  }
+
   R IExprVisitor<R>.VisitBinaryExpr(BinaryExpr expr)
   {
     return Parenthesize(expr.Op.Lexeme, expr.Left, expr.Right);
