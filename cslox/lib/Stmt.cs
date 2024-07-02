@@ -4,15 +4,9 @@ public interface IStmtVisitor
   void VisitPrintStmt(PrintStmt stmt);
 }
 
-public interface IStmtVisitor<R>
-{
-  R VisitExprStmt(ExprStmt stmt);
-  R VisitPrintStmt(PrintStmt stmt);
-}
-
 abstract public class Stmt
 {
-  abstract public R Accept<R>(IStmtVisitor<R> visitor);
+  abstract public void Accept(IStmtVisitor visitor);
 }
 
 public class ExprStmt : Stmt
@@ -21,9 +15,9 @@ public class ExprStmt : Stmt
   public ExprStmt(Expr expression)  {
     Expression = expression;
   }
-  override public R Accept<R>(IStmtVisitor<R> visitor)
+  override public void Accept(IStmtVisitor visitor)
   {
-    return visitor.VisitExprStmt(this);
+    visitor.VisitExprStmt(this);
   }
 }
 
@@ -33,8 +27,8 @@ public class PrintStmt : Stmt
   public PrintStmt(Expr expression)  {
     Expression = expression;
   }
-  override public R Accept<R>(IStmtVisitor<R> visitor)
+  override public void Accept(IStmtVisitor visitor)
   {
-    return visitor.VisitPrintStmt(this);
+    visitor.VisitPrintStmt(this);
   }
 }

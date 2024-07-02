@@ -30,12 +30,9 @@ class Lox
     List<Token> tokens = scanner.ScanTokens();
 
     Parser parser = new(tokens);
-    Expr? expression = parser.Parse();
+    List<Stmt> statements = parser.Parse();
 
-    if (expression is not null)
-    {
-      Interpreter.Interpret(expression);
-    }
+    Interpreter.Interpret(statements);
   }
 
   static void RunFile(string fileName)

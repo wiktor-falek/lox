@@ -7,12 +7,14 @@ public class RuntimeError(Token token, string message) : SystemException(message
 
 public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
-  public void Interpret(Expr expression)
+  public void Interpret(List<Stmt> statements)
   {
     try
     {
-      object? value = Evaluate(expression);
-      Console.WriteLine(Stringify(value));
+      foreach (Stmt statement in statements)
+      {
+        Execute(statement);
+      }
     }
     catch (RuntimeError error)
     {
@@ -20,14 +22,20 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     }
   }
 
+  private void Execute(Stmt statement)
+  {
+    statement.Accept(this);
+  }
+
   void IStmtVisitor.VisitExprStmt(ExprStmt stmt)
   {
-    throw new NotImplementedException();
+    Evaluate(stmt.Expression);
   }
 
   void IStmtVisitor.VisitPrintStmt(PrintStmt stmt)
   {
-    throw new NotImplementedException();
+    object? value = Evaluate(stmt.Expression);
+    Console.WriteLine(Stringify(value));
   }
 
   object? IExprVisitor<object?>.VisitLiteralExpr(LiteralExpr expr)

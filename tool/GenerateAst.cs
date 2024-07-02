@@ -9,7 +9,7 @@ class GenerateAst
     }
 
     string outputDir = args[0];
-    DefineAst(outputDir, "Expr", [
+    DefineAst(outputDir, "Expr", "object?", [
       "BinaryExpr   : Expr left, Token op, Expr right",
       "GroupingExpr : Expr expression",
       "LiteralExpr  : object? value",
@@ -18,23 +18,37 @@ class GenerateAst
       "CommaExpr    : List<Expr> expressions"
     ]);
 
-    DefineAst(outputDir, "Stmt", [
+    DefineAst(outputDir, "Stmt", "void", [
       "ExprStmt : Expr expression",
       "PrintStmt : Expr expression",
     ]);
   }
 
-  private static void DefineAst(string outputDir, string baseName, List<string> types)
+  private static void DefineAst(string outputDir, string baseName, string visitorReturnType, List<string> types)
   {
     string path = Path.Combine(outputDir, $"{baseName}.cs");
     using StreamWriter writer = new(path);
 
-    DefineVoidReturnVisitor(writer, baseName, types);
-    DefineVisitor(writer, baseName, types);
+    if (visitorReturnType == "void")
+    {
+      DefineVoidReturnVisitor(writer, baseName, types);
+    }
+    else
+    {
+      DefineVisitor(writer, baseName, types);
+    }
 
     writer.WriteLine($"abstract public class {baseName}");
     writer.WriteLine("{");
-    writer.WriteLine($"  abstract public R Accept<R>(I{baseName}Visitor<R> visitor);");
+    if (visitorReturnType == "void")
+    {
+      writer.WriteLine($"  abstract public void Accept(I{baseName}Visitor visitor);");
+    }
+    else
+    {
+      writer.WriteLine($"  abstract public R Accept<R>(I{baseName}Visitor<R> visitor);");
+
+    }
     writer.WriteLine("}");
 
     foreach (string type in types)
@@ -42,11 +56,11 @@ class GenerateAst
 
       string className = type.Split(":")[0].Trim();
       string fields = type.Split(":")[1].Trim();
-      DefineType(writer, baseName, className, fields);
+      DefineType(writer, baseName, className, visitorReturnType, fields);
     }
   }
 
-  private static void DefineType(StreamWriter writer, string baseName, string className, string fieldList)
+  private static void DefineType(StreamWriter writer, string baseName, string className, string visitorReturnType, string fieldList)
   {
     IEnumerable<string> fields = fieldList.Split(",").Select(e => e.Trim());
 
@@ -85,11 +99,20 @@ class GenerateAst
     }
     writer.WriteLine("  }");
 
-    writer.WriteLine($"  override public R Accept<R>(I{baseName}Visitor<R> visitor)");
-    writer.WriteLine("  {");
-    writer.WriteLine($"    return visitor.Visit{className}(this);");
-    writer.WriteLine("  }");
-
+    if (visitorReturnType == "void")
+    {
+      writer.WriteLine($"  override public void Accept(I{baseName}Visitor visitor)");
+      writer.WriteLine("  {");
+      writer.WriteLine($"    visitor.Visit{className}(this);");
+      writer.WriteLine("  }");
+    }
+    else
+    {
+      writer.WriteLine($"  override public R Accept<R>(I{baseName}Visitor<R> visitor)");
+      writer.WriteLine("  {");
+      writer.WriteLine($"    return visitor.Visit{className}(this);");
+      writer.WriteLine("  }");
+    }
     writer.WriteLine("}");
   }
 
