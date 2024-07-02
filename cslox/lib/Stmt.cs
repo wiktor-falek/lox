@@ -1,3 +1,9 @@
+public interface IStmtVisitor
+{
+  void VisitExprStmt(ExprStmt stmt);
+  void VisitPrintStmt(PrintStmt stmt);
+}
+
 public interface IStmtVisitor<R>
 {
   R VisitExprStmt(ExprStmt stmt);

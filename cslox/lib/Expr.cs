@@ -1,3 +1,13 @@
+public interface IExprVisitor
+{
+  void VisitBinaryExpr(BinaryExpr expr);
+  void VisitGroupingExpr(GroupingExpr expr);
+  void VisitLiteralExpr(LiteralExpr expr);
+  void VisitUnaryExpr(UnaryExpr expr);
+  void VisitTernaryExpr(TernaryExpr expr);
+  void VisitCommaExpr(CommaExpr expr);
+}
+
 public interface IExprVisitor<R>
 {
   R VisitBinaryExpr(BinaryExpr expr);

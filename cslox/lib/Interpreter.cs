@@ -5,7 +5,7 @@ public class RuntimeError(Token token, string message) : SystemException(message
   public readonly Token Token = token;
 }
 
-public class Interpreter : IExprVisitor<object?>
+public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
   public void Interpret(Expr expression)
   {
@@ -18,6 +18,16 @@ public class Interpreter : IExprVisitor<object?>
     {
       Lox.RuntimeError(error);
     }
+  }
+
+  void IStmtVisitor.VisitExprStmt(ExprStmt stmt)
+  {
+    throw new NotImplementedException();
+  }
+
+  void IStmtVisitor.VisitPrintStmt(PrintStmt stmt)
+  {
+    throw new NotImplementedException();
   }
 
   object? IExprVisitor<object?>.VisitLiteralExpr(LiteralExpr expr)

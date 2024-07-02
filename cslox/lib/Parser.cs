@@ -7,16 +7,16 @@ public class Parser(List<Token> tokens)
   private readonly List<Token> Tokens = tokens;
   private int Current = 0;
 
-  public Expr? Parse()
+  public List<Stmt> Parse()
   {
-    try
+    List<Stmt> statements = [];
+
+    while (!IsAtEnd())
     {
-      return Expression();
+      statements.Add(Statement());
     }
-    catch (ParseError)
-    {
-      return null;
-    }
+
+    return statements;
   }
 
   private bool Match(params TokenType[] types)
@@ -94,6 +94,29 @@ public class Parser(List<Token> tokens)
     }
 
     Advance();
+  }
+
+  private Stmt Statement()
+  {
+    if (Match(PRINT)) return PrintStatement();
+
+    return ExpressionStatement();
+  }
+
+  private PrintStmt PrintStatement()
+  {
+    Expr value = Expression();
+
+    Consume(SEMICOLON, "Expect ';' after value.");
+    return new PrintStmt(value);
+  }
+
+  private ExprStmt ExpressionStatement()
+  {
+    Expr expr = Expression();
+
+    Consume(SEMICOLON, "Expect ';' after expression.");
+    return new ExprStmt(expr);
   }
 
   private Expr Expression()

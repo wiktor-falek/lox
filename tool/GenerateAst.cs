@@ -29,6 +29,7 @@ class GenerateAst
     string path = Path.Combine(outputDir, $"{baseName}.cs");
     using StreamWriter writer = new(path);
 
+    DefineVoidReturnVisitor(writer, baseName, types);
     DefineVisitor(writer, baseName, types);
 
     writer.WriteLine($"abstract public class {baseName}");
@@ -100,6 +101,18 @@ class GenerateAst
     {
       string className = type.Split(":")[0].Trim();
       writer.WriteLine($"  R Visit{className}({className} {baseName.ToLower()});");
+    }
+    writer.WriteLine("}\n");
+  }
+
+  private static void DefineVoidReturnVisitor(StreamWriter writer, string baseName, List<string> types)
+  {
+    writer.WriteLine($"public interface I{baseName}Visitor");
+    writer.WriteLine("{");
+    foreach (string type in types)
+    {
+      string className = type.Split(":")[0].Trim();
+      writer.WriteLine($"  void Visit{className}({className} {baseName.ToLower()});");
     }
     writer.WriteLine("}\n");
   }
