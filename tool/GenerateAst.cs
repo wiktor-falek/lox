@@ -10,12 +10,17 @@ class GenerateAst
 
     string outputDir = args[0];
     DefineAst(outputDir, "Expr", [
-      "Binary   : Expr left, Token op, Expr right",
-      "Grouping : Expr expression",
-      "Literal  : object? value",
-      "Unary    : Token op, Expr right",
-      "Ternary  : Expr condition, Expr trueExpr, Expr falseExpr",
-      "Comma    : List<Expr> expressions"
+      "BinaryExpr   : Expr left, Token op, Expr right",
+      "GroupingExpr : Expr expression",
+      "LiteralExpr  : object? value",
+      "UnaryExpr    : Token op, Expr right",
+      "TernaryExpr  : Expr condition, Expr trueExpr, Expr falseExpr",
+      "CommaExpr    : List<Expr> expressions"
+    ]);
+
+    DefineAst(outputDir, "Stmt", [
+      "ExprStmt : Expr expression",
+      "PrintStmt : Expr expression",
     ]);
   }
 
@@ -28,7 +33,7 @@ class GenerateAst
 
     writer.WriteLine($"abstract public class {baseName}");
     writer.WriteLine("{");
-    writer.WriteLine("  abstract public R Accept<R>(IVisitor<R> visitor);");
+    writer.WriteLine($"  abstract public R Accept<R>(I{baseName}Visitor<R> visitor);");
     writer.WriteLine("}");
 
     foreach (string type in types)
@@ -79,9 +84,9 @@ class GenerateAst
     }
     writer.WriteLine("  }");
 
-    writer.WriteLine("  override public R Accept<R>(IVisitor<R> visitor)");
+    writer.WriteLine($"  override public R Accept<R>(I{baseName}Visitor<R> visitor)");
     writer.WriteLine("  {");
-    writer.WriteLine($"    return visitor.Visit{className}{baseName}(this);");
+    writer.WriteLine($"    return visitor.Visit{className}(this);");
     writer.WriteLine("  }");
 
     writer.WriteLine("}");
@@ -89,12 +94,12 @@ class GenerateAst
 
   private static void DefineVisitor(StreamWriter writer, string baseName, List<string> types)
   {
-    writer.WriteLine("public interface IVisitor<R>");
+    writer.WriteLine($"public interface I{baseName}Visitor<R>");
     writer.WriteLine("{");
     foreach (string type in types)
     {
       string className = type.Split(":")[0].Trim();
-      writer.WriteLine($"  R Visit{className}{baseName}({className} {baseName.ToLower()});");
+      writer.WriteLine($"  R Visit{className}({className} {baseName.ToLower()});");
     }
     writer.WriteLine("}\n");
   }

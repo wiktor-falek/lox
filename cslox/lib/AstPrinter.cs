@@ -2,7 +2,7 @@ using System.Text;
 
 using R = System.String;
 
-class AstPrinter : IVisitor<R>
+class AstPrinter : IExprVisitor<R>
 {
   public void Print(Expr? expr)
   {
@@ -12,17 +12,17 @@ class AstPrinter : IVisitor<R>
     }
   }
 
-  R IVisitor<R>.VisitBinaryExpr(Binary expr)
+  R IExprVisitor<R>.VisitBinaryExpr(BinaryExpr expr)
   {
     return Parenthesize(expr.Op.Lexeme, expr.Left, expr.Right);
   }
 
-  R IVisitor<R>.VisitGroupingExpr(Grouping expr)
+  R IExprVisitor<R>.VisitGroupingExpr(GroupingExpr expr)
   {
     return Parenthesize("group", expr.Expression);
   }
 
-  R IVisitor<R>.VisitLiteralExpr(Literal expr)
+  R IExprVisitor<R>.VisitLiteralExpr(LiteralExpr expr)
   {
     if (expr.Value == null)
     {
@@ -34,17 +34,17 @@ class AstPrinter : IVisitor<R>
     }
   }
 
-  R IVisitor<R>.VisitUnaryExpr(Unary expr)
+  R IExprVisitor<R>.VisitUnaryExpr(UnaryExpr expr)
   {
     return Parenthesize(expr.Op.Lexeme, expr.Right);
   }
 
-  R IVisitor<R>.VisitTernaryExpr(Ternary expr)
+  R IExprVisitor<R>.VisitTernaryExpr(TernaryExpr expr)
   {
     return Parenthesize("ternary", expr.Condition, expr.TrueExpr, expr.FalseExpr);
   }
 
-  R IVisitor<R>.VisitCommaExpr(Comma expr)
+  R IExprVisitor<R>.VisitCommaExpr(CommaExpr expr)
   {
     return Parenthesize("comma", [.. expr.Expressions]);
   }

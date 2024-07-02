@@ -1,95 +1,95 @@
-public interface IVisitor<R>
+public interface IExprVisitor<R>
 {
-  R VisitBinaryExpr(Binary expr);
-  R VisitGroupingExpr(Grouping expr);
-  R VisitLiteralExpr(Literal expr);
-  R VisitUnaryExpr(Unary expr);
-  R VisitTernaryExpr(Ternary expr);
-  R VisitCommaExpr(Comma expr);
+  R VisitBinaryExpr(BinaryExpr expr);
+  R VisitGroupingExpr(GroupingExpr expr);
+  R VisitLiteralExpr(LiteralExpr expr);
+  R VisitUnaryExpr(UnaryExpr expr);
+  R VisitTernaryExpr(TernaryExpr expr);
+  R VisitCommaExpr(CommaExpr expr);
 }
 
 abstract public class Expr
 {
-  abstract public R Accept<R>(IVisitor<R> visitor);
+  abstract public R Accept<R>(IExprVisitor<R> visitor);
 }
 
-public class Binary : Expr
+public class BinaryExpr : Expr
 {
   public readonly Expr Left;
   public readonly Token Op;
   public readonly Expr Right;
-  public Binary(Expr left, Token op, Expr right)  {
+  public BinaryExpr(Expr left, Token op, Expr right)  {
     Left = left;
     Op = op;
     Right = right;
   }
-  override public R Accept<R>(IVisitor<R> visitor)
+  override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitBinaryExpr(this);
   }
 }
 
-public class Grouping : Expr
+public class GroupingExpr : Expr
 {
   public readonly Expr Expression;
-  public Grouping(Expr expression)  {
+  public GroupingExpr(Expr expression)  {
     Expression = expression;
   }
-  override public R Accept<R>(IVisitor<R> visitor)
+  override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitGroupingExpr(this);
   }
 }
 
-public class Literal : Expr
+public class LiteralExpr : Expr
 {
   public readonly object? Value;
-  public Literal(object? value)  {
+  public LiteralExpr(object? value)  {
     Value = value;
   }
-  override public R Accept<R>(IVisitor<R> visitor)
+  override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitLiteralExpr(this);
   }
 }
 
-public class Unary : Expr
+public class UnaryExpr : Expr
 {
   public readonly Token Op;
   public readonly Expr Right;
-  public Unary(Token op, Expr right)  {
+  public UnaryExpr(Token op, Expr right)  {
     Op = op;
     Right = right;
   }
-  override public R Accept<R>(IVisitor<R> visitor)
+  override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitUnaryExpr(this);
   }
 }
 
-public class Ternary : Expr
+public class TernaryExpr : Expr
 {
   public readonly Expr Condition;
   public readonly Expr TrueExpr;
   public readonly Expr FalseExpr;
-  public Ternary(Expr condition, Expr trueExpr, Expr falseExpr)  {
+  public TernaryExpr(Expr condition, Expr trueExpr, Expr falseExpr)  {
     Condition = condition;
     TrueExpr = trueExpr;
     FalseExpr = falseExpr;
   }
-  override public R Accept<R>(IVisitor<R> visitor)
+  override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitTernaryExpr(this);
   }
 }
 
-public class Comma : Expr
+public class CommaExpr : Expr
 {
   public readonly List<Expr> Expressions;
-  public Comma(List<Expr> expressions)  {
+  public CommaExpr(List<Expr> expressions)  {
     Expressions = expressions;
   }
-  override public R Accept<R>(IVisitor<R> visitor)
+  override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitCommaExpr(this);
   }

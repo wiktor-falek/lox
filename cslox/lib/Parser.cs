@@ -115,7 +115,7 @@ public class Parser(List<Token> tokens)
 
     if (expressions.Count > 1)
     {
-      return new Comma(expressions);
+      return new CommaExpr(expressions);
     }
 
     return expr;
@@ -133,7 +133,7 @@ public class Parser(List<Token> tokens)
 
       Expr right = Ternary();
 
-      return new Ternary(expr, left, right);
+      return new TernaryExpr(expr, left, right);
     }
 
     return expr;
@@ -147,7 +147,7 @@ public class Parser(List<Token> tokens)
     {
       Token op = Previous();
       Expr right = Comparison();
-      expr = new Binary(expr, op, right);
+      expr = new BinaryExpr(expr, op, right);
     }
 
     return expr;
@@ -161,7 +161,7 @@ public class Parser(List<Token> tokens)
     {
       Token op = Previous();
       Expr right = Term();
-      expr = new Binary(expr, op, right);
+      expr = new BinaryExpr(expr, op, right);
     }
 
     return expr;
@@ -175,7 +175,7 @@ public class Parser(List<Token> tokens)
     {
       Token op = Previous();
       Expr right = Factor();
-      expr = new Binary(expr, op, right);
+      expr = new BinaryExpr(expr, op, right);
     }
 
     return expr;
@@ -189,7 +189,7 @@ public class Parser(List<Token> tokens)
     {
       Token op = Previous();
       Expr right = Unary();
-      expr = new Binary(expr, op, right);
+      expr = new BinaryExpr(expr, op, right);
     }
 
     return expr;
@@ -201,7 +201,7 @@ public class Parser(List<Token> tokens)
     {
       Token op = Previous();
       Expr right = Primary();
-      return new Unary(op, right);
+      return new UnaryExpr(op, right);
     }
 
     return Primary();
@@ -209,20 +209,20 @@ public class Parser(List<Token> tokens)
 
   private Expr Primary()
   {
-    if (Match(TRUE)) return new Literal(true);
-    if (Match(FALSE)) return new Literal(false);
-    if (Match(NIL)) return new Literal(null);
+    if (Match(TRUE)) return new LiteralExpr(true);
+    if (Match(FALSE)) return new LiteralExpr(false);
+    if (Match(NIL)) return new LiteralExpr(null);
 
     if (Match(NUMBER, STRING))
     {
-      return new Literal(Previous().Literal);
+      return new LiteralExpr(Previous().Literal);
     }
 
     if (Match(LEFT_PAREN))
     {
       Expr expr = Expression();
       Consume(RIGHT_PAREN, "Expect ')' after expression.");
-      return new Grouping(expr);
+      return new GroupingExpr(expr);
     }
 
     throw Error(Peek(), "Expect expression.");

@@ -5,7 +5,7 @@ public class RuntimeError(Token token, string message) : SystemException(message
   public readonly Token Token = token;
 }
 
-public class Interpreter : IVisitor<object?>
+public class Interpreter : IExprVisitor<object?>
 {
   public void Interpret(Expr expression)
   {
@@ -20,17 +20,17 @@ public class Interpreter : IVisitor<object?>
     }
   }
 
-  object? IVisitor<object?>.VisitLiteralExpr(Literal expr)
+  object? IExprVisitor<object?>.VisitLiteralExpr(LiteralExpr expr)
   {
     return expr.Value;
   }
 
-  object? IVisitor<object?>.VisitGroupingExpr(Grouping expr)
+  object? IExprVisitor<object?>.VisitGroupingExpr(GroupingExpr expr)
   {
     return Evaluate(expr.Expression);
   }
 
-  object? IVisitor<object?>.VisitUnaryExpr(Unary expr)
+  object? IExprVisitor<object?>.VisitUnaryExpr(UnaryExpr expr)
   {
     object? right = Evaluate(expr.Right);
 
@@ -46,7 +46,7 @@ public class Interpreter : IVisitor<object?>
     };
   }
 
-  object? IVisitor<object?>.VisitBinaryExpr(Binary expr)
+  object? IExprVisitor<object?>.VisitBinaryExpr(BinaryExpr expr)
   {
     object? left = Evaluate(expr.Left);
     object? right = Evaluate(expr.Right);
@@ -94,7 +94,7 @@ public class Interpreter : IVisitor<object?>
     }
   }
 
-  object? IVisitor<object?>.VisitTernaryExpr(Ternary expr)
+  object? IExprVisitor<object?>.VisitTernaryExpr(TernaryExpr expr)
   {
     if (IsTruthy(Evaluate(expr.Condition)))
     {
@@ -103,7 +103,7 @@ public class Interpreter : IVisitor<object?>
     return Evaluate(expr.FalseExpr);
   }
 
-  object? IVisitor<object?>.VisitCommaExpr(Comma expr)
+  object? IExprVisitor<object?>.VisitCommaExpr(CommaExpr expr)
   {
     object? lastExprValue = null;
 
