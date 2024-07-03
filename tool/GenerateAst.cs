@@ -21,6 +21,7 @@ class GenerateAst
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [
+      "BlockStmt : List<Stmt> statements",
       "ExprStmt  : Expr expression",
       "PrintStmt : Expr expression",
       "VarStmt   : Token name, Expr? initializer",

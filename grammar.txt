@@ -2,10 +2,12 @@ program        → statement* EOF ;
 declaration    → varDecl
                | statement ;
 statement      → exprStmt
-               | printStmt ;
+               | printStmt
+               | block ;
 exprStmt       → expression ";" ;
 printStmt      → "print" expression ";" ;
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
+block          → "{" declaration* "}" ;
 
 expression     → assignment ;
 assignment     → IDENTIFIER "=" assignment ;

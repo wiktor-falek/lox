@@ -7,7 +7,8 @@ public class RuntimeError(Token token, string message) : SystemException(message
 
 public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
-  private readonly RuntimeEnvironment Environment = new();
+  private ScopeEnvironment Environment = new();
+  public Option<object?> LastExpressionValue = Option<object?>.None();
 
   public void Interpret(List<Stmt> statements)
   {
@@ -31,7 +32,8 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitExprStmt(ExprStmt stmt)
   {
-    Evaluate(stmt.Expression);
+    object? value = Evaluate(stmt.Expression);
+    LastExpressionValue = Option<object?>.Some(value);
   }
 
   void IStmtVisitor.VisitPrintStmt(PrintStmt stmt)
@@ -52,9 +54,33 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Environment.Define(stmt.Name.Lexeme, value);
   }
 
+  void IStmtVisitor.VisitBlockStmt(BlockStmt stmt)
+  {
+    ExecuteBlock(stmt.Statements, new ScopeEnvironment(Environment));
+  }
+
+  void ExecuteBlock(List<Stmt> statements, ScopeEnvironment environment)
+  {
+    ScopeEnvironment previous = Environment;
+
+    try
+    {
+      Environment = environment;
+
+      foreach (Stmt statement in statements)
+      {
+        Execute(statement);
+      }
+    }
+    finally
+    {
+      Environment = previous;
+    }
+  }
+
   object? IExprVisitor<object?>.VisitAssignExpr(AssignExpr expr)
   {
-    object? value = Evaluate(expr.Value); 
+    object? value = Evaluate(expr.Value);
     Environment.Assign(expr.Name, value);
     return value;
   }

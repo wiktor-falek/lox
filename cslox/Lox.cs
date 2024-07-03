@@ -59,6 +59,14 @@ class Lox
       string? line = Console.ReadLine();
       if (line == null) break;
       Run(line);
+
+
+      Option<object?> lastExpressionValue = Interpreter.LastExpressionValue;
+      if (lastExpressionValue.IsSome)
+      {
+        Console.WriteLine(lastExpressionValue.Value ?? "nil");
+      }
+      Interpreter.LastExpressionValue = Option<object?>.None();
       HadError = false;
     }
   }
