@@ -17,24 +17,18 @@ while (i != 16) {
   mod3 = mod3 + 3;
   mod5 = mod5 + 5;  
 
-  var matched = False;
-
   if (mod3 == 0) {
     if (mod5 == 0) {
       print "FizzBuzz";
     } else {
       print "Fizz";
     }
-    matched = True;
   } else {
     if (mod5 == 0) {
       print "Buzz";
-      matched = True;
+    } else {
+      print i;
     }
-  }
-
-  if (!matched) {
-    print i;
   }
 
   i = i + 1;
