@@ -10,7 +10,10 @@ class ScopeEnvironment(ScopeEnvironment? enclosing = null)
       return value;
     }
 
-    Enclosing?.Get(name);
+    if (Enclosing is not null)
+    {
+      return Enclosing.Get(name);
+    }
 
     throw new RuntimeError(name, $"Undefined variable '{name.Lexeme}'.");
   }
