@@ -125,6 +125,7 @@ public class Parser(List<Token> tokens)
 
   private Stmt Statement()
   {
+    if (Match(IF)) return IfStatement();
     if (Match(PRINT)) return PrintStatement();
     if (Match(LEFT_BRACE)) return new BlockStmt(Block());
 
@@ -154,6 +155,18 @@ public class Parser(List<Token> tokens)
 
     Consume(RIGHT_BRACE, "Expect '}' after block.");
     return statements;
+  }
+
+  private Stmt IfStatement()
+  {
+    Consume(LEFT_PAREN, "Expect '(' after 'if'.");
+    Expr condition = Expression();
+    Consume(RIGHT_PAREN, "Expect ')' after if condition.");
+
+    Stmt thenCondition = Statement();
+    Stmt? elseCondition = Match(ELSE) ? Statement() : null;
+
+    return new IfStmt(condition, thenCondition, elseCondition);
   }
 
   private ExprStmt ExpressionStatement()

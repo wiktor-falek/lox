@@ -1,7 +1,17 @@
-var a = 1;
-{
-  var a = a + 2;
-  print a;
-}
+var True = 1 == 1;
+var False = 1 != 1;
 
-print a;
+var a = True;
+var b = False;
+
+if (a) {
+  print "a";
+  if (b) {
+    print("ab");
+  }
+  else {
+   print "!b";
+  }
+} else {
+  print "!a";
+}

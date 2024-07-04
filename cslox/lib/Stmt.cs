@@ -1,5 +1,6 @@
 public interface IStmtVisitor
 {
+  void VisitIfStmt(IfStmt stmt);
   void VisitBlockStmt(BlockStmt stmt);
   void VisitExprStmt(ExprStmt stmt);
   void VisitPrintStmt(PrintStmt stmt);
@@ -9,6 +10,22 @@ public interface IStmtVisitor
 abstract public class Stmt
 {
   abstract public void Accept(IStmtVisitor visitor);
+}
+
+public class IfStmt : Stmt
+{
+  public readonly Expr Condition;
+  public readonly Stmt ThenBranch;
+  public readonly Stmt? ElseBranch;
+  public IfStmt(Expr condition, Stmt thenBranch, Stmt? elseBranch)  {
+    Condition = condition;
+    ThenBranch = thenBranch;
+    ElseBranch = elseBranch;
+  }
+  override public void Accept(IStmtVisitor visitor)
+  {
+    visitor.VisitIfStmt(this);
+  }
 }
 
 public class BlockStmt : Stmt

@@ -36,6 +36,18 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     LastExpressionValue = Option<object?>.Some(value);
   }
 
+  void IStmtVisitor.VisitIfStmt(IfStmt stmt)
+  {
+    if (IsTruthy(Evaluate(stmt.Condition)))
+    {
+      Execute(stmt.ThenBranch);
+    }
+    else if (stmt.ElseBranch is not null)
+    {
+      Execute(stmt.ElseBranch);
+    };
+  }
+
   void IStmtVisitor.VisitPrintStmt(PrintStmt stmt)
   {
     object? value = Evaluate(stmt.Expression);

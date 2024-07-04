@@ -21,6 +21,7 @@ class GenerateAst
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [
+      "IfStmt    : Expr condition, Stmt thenBranch, Stmt? elseBranch",
       "BlockStmt : List<Stmt> statements",
       "ExprStmt  : Expr expression",
       "PrintStmt : Expr expression",
