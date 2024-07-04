@@ -1,28 +1,55 @@
+// STATEMENTS
 program        → statement* EOF ;
+
 declaration    → varDecl
                | statement ;
+
 statement      → exprStmt
+               | forStmt
+               | whileStmt
                | ifStmt
                | printStmt
                | block ;
+
+forStmt        → "for" "(" ( varDecl | exprStmt | ";" ) 
+                 expression? ";"
+                 expression? ")" statement ;
+
+whileStmt      → "while" "(" expression ")" statement ;
+
 ifStmt         → "if" "(" expression ")" statement
                ( "else" statement )? ;
+
 exprStmt       → expression ";" ;
+
 printStmt      → "print" expression ";" ;
+
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
+
 block          → "{" declaration* "}" ;
 
+
+// EXPRESSIONS
 expression     → assignment ;
+
 assignment     → IDENTIFIER "=" assignment ;
                | comma ;
+
 comma          → ternary ( "," ternary )* ;
+
 ternary        → equality ( "?" expression  ":" ternary )? ;
+
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
+
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+
 term           → factor ( ( "-" | "+" ) factor )* ;
+
 factor         → unary ( ( "/" | "*" ) unary )* ;
+
 unary          → ( "!" | "-" ) unary
                | primary ;
+               
 primary        → "true" | "false" | "nil"
                | NUMBER | STRING
                | "(" expression ")"

@@ -126,6 +126,7 @@ public class Parser(List<Token> tokens)
   private Stmt Statement()
   {
     if (Match(IF)) return IfStatement();
+    if (Match(FOR)) return ForStatement();
     if (Match(WHILE)) return WhileStatement();
     if (Match(PRINT)) return PrintStatement();
     if (Match(LEFT_BRACE)) return new BlockStmt(Block());
@@ -168,6 +169,68 @@ public class Parser(List<Token> tokens)
     Stmt? elseCondition = Match(ELSE) ? Statement() : null;
 
     return new IfStmt(condition, thenCondition, elseCondition);
+  }
+
+  private Stmt ForStatement()
+  {
+    Consume(LEFT_PAREN, "Expect '(' after 'for'.");
+
+    Stmt? initializer;
+    if (Match(SEMICOLON))
+    {
+      initializer = null;
+    }
+    else if (Match(VAR))
+    {
+      initializer = VarDeclaration();
+    }
+    else
+    {
+      initializer = ExpressionStatement();
+    }
+
+    Expr condition = Check(SEMICOLON) ? new LiteralExpr(true) : Expression();
+    Consume(SEMICOLON, "Expect ';' after loop condition.");
+    Expr? increment = Check(RIGHT_PAREN) ? null : Expression();
+    Consume(RIGHT_PAREN, "Expect ')' after for clauses.");
+    Stmt body = Statement();
+
+    if (increment is not null)
+    {
+      body = new BlockStmt([body, new ExprStmt(increment)]);
+    }
+    /*
+      {
+        print i;
+        i = i + 1;
+      }
+    */
+
+
+    body = new WhileStmt(condition, body);
+    /*
+      while (i < 3)
+      {
+        print i;
+        i = i + 1;
+      }
+    */
+
+    if (initializer is not null)
+    {
+      body = new BlockStmt([initializer, body]);
+    }
+    /*
+      {
+        var i = 0;
+        while (i < 3) {
+          print i;
+          i = i + 1;
+        }
+      }
+    */
+
+    return body;
   }
 
   private WhileStmt WhileStatement()
