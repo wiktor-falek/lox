@@ -126,6 +126,7 @@ public class Parser(List<Token> tokens)
   private Stmt Statement()
   {
     if (Match(IF)) return IfStatement();
+    if (Match(WHILE)) return WhileStatement();
     if (Match(PRINT)) return PrintStatement();
     if (Match(LEFT_BRACE)) return new BlockStmt(Block());
 
@@ -157,7 +158,7 @@ public class Parser(List<Token> tokens)
     return statements;
   }
 
-  private Stmt IfStatement()
+  private IfStmt IfStatement()
   {
     Consume(LEFT_PAREN, "Expect '(' after 'if'.");
     Expr condition = Expression();
@@ -167,6 +168,17 @@ public class Parser(List<Token> tokens)
     Stmt? elseCondition = Match(ELSE) ? Statement() : null;
 
     return new IfStmt(condition, thenCondition, elseCondition);
+  }
+
+  private WhileStmt WhileStatement()
+  {
+    Consume(LEFT_PAREN, "Expect '(' after 'while'.");
+    Expr condition = Expression();
+    Consume(RIGHT_PAREN, "Expect ')' after while condition.");
+
+    Stmt body = Statement();
+
+    return new WhileStmt(condition, body);
   }
 
   private ExprStmt ExpressionStatement()

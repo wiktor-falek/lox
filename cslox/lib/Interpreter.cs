@@ -48,6 +48,14 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     };
   }
 
+  void IStmtVisitor.VisitWhileStmt(WhileStmt stmt)
+  {
+    while (IsTruthy(Evaluate(stmt.Expression)))
+    {
+      Execute(stmt.Body);
+    }
+  }
+
   void IStmtVisitor.VisitPrintStmt(PrintStmt stmt)
   {
     object? value = Evaluate(stmt.Expression);

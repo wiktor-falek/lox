@@ -1,0 +1,41 @@
+var True = 1 == 1;
+var False = 1 != 1;
+
+var i = 1;
+while (i != 16) {
+  var mod3 = i;
+  var mod5 = i;
+
+  while (mod3 >= 0) {
+    mod3 = mod3 - 3;
+  }
+  
+  while (mod5 >= 0) {
+    mod5 = mod5 - 5;
+  }
+
+  mod3 = mod3 + 3;
+  mod5 = mod5 + 5;  
+
+  var matched = False;
+
+  if (mod3 == 0) {
+    if (mod5 == 0) {
+      print "FizzBuzz";
+    } else {
+      print "Fizz";
+    }
+    matched = True;
+  } else {
+    if (mod5 == 0) {
+      print "Buzz";
+      matched = True;
+    }
+  }
+
+  if (!matched) {
+    print i;
+  }
+
+  i = i + 1;
+}

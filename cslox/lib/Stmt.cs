@@ -5,6 +5,7 @@ public interface IStmtVisitor
   void VisitExprStmt(ExprStmt stmt);
   void VisitPrintStmt(PrintStmt stmt);
   void VisitVarStmt(VarStmt stmt);
+  void VisitWhileStmt(WhileStmt stmt);
 }
 
 abstract public class Stmt
@@ -75,5 +76,19 @@ public class VarStmt : Stmt
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitVarStmt(this);
+  }
+}
+
+public class WhileStmt : Stmt
+{
+  public readonly Expr Expression;
+  public readonly Stmt Body;
+  public WhileStmt(Expr expression, Stmt body)  {
+    Expression = expression;
+    Body = body;
+  }
+  override public void Accept(IStmtVisitor visitor)
+  {
+    visitor.VisitWhileStmt(this);
   }
 }

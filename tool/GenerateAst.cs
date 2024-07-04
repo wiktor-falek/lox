@@ -26,6 +26,7 @@ class GenerateAst
       "ExprStmt  : Expr expression",
       "PrintStmt : Expr expression",
       "VarStmt   : Token name, Expr? initializer",
+      "WhileStmt : Expr expression, Stmt body"
     ]);
   }
 
