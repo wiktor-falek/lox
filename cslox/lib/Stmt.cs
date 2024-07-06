@@ -6,6 +6,7 @@ public interface IStmtVisitor
   void VisitPrintStmt(PrintStmt stmt);
   void VisitVarStmt(VarStmt stmt);
   void VisitWhileStmt(WhileStmt stmt);
+  void VisitBreakStmt(BreakStmt stmt);
 }
 
 abstract public class Stmt
@@ -90,5 +91,17 @@ public class WhileStmt : Stmt
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitWhileStmt(this);
+  }
+}
+
+public class BreakStmt : Stmt
+{
+  public readonly Token Token;
+  public BreakStmt(Token token)  {
+    Token = token;
+  }
+  override public void Accept(IStmtVisitor visitor)
+  {
+    visitor.VisitBreakStmt(this);
   }
 }

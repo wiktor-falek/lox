@@ -128,10 +128,17 @@ public class Parser(List<Token> tokens)
     if (Match(IF)) return IfStatement();
     if (Match(FOR)) return ForStatement();
     if (Match(WHILE)) return WhileStatement();
+    if (Match(BREAK)) return BreakStatement();
     if (Match(PRINT)) return PrintStatement();
     if (Match(LEFT_BRACE)) return new BlockStmt(Block());
 
     return ExpressionStatement();
+  }
+
+  private BreakStmt BreakStatement()
+  {
+    Consume(SEMICOLON, "Expect ';' after break.");
+    return new BreakStmt(Previous());
   }
 
   private PrintStmt PrintStatement()
@@ -199,36 +206,13 @@ public class Parser(List<Token> tokens)
     {
       body = new BlockStmt([body, new ExprStmt(increment)]);
     }
-    /*
-      {
-        print i;
-        i = i + 1;
-      }
-    */
-
 
     body = new WhileStmt(condition, body);
-    /*
-      while (i < 3)
-      {
-        print i;
-        i = i + 1;
-      }
-    */
 
     if (initializer is not null)
     {
       body = new BlockStmt([initializer, body]);
     }
-    /*
-      {
-        var i = 0;
-        while (i < 3) {
-          print i;
-          i = i + 1;
-        }
-      }
-    */
 
     return body;
   }

@@ -25,6 +25,7 @@ public class Scanner(string source)
       {"true", TRUE},
       {"var", VAR},
       {"while", WHILE},
+      {"break", BREAK},
   };
 
   public List<Token> ScanTokens()

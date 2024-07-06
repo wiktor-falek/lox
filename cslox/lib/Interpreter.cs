@@ -5,6 +5,8 @@ public class RuntimeError(Token token, string message) : SystemException(message
   public readonly Token Token = token;
 }
 
+public class BreakOutsideLoopError(Token token) : RuntimeError(token, "Cannot break outside of a loop.");
+
 public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
   private ScopeEnvironment Environment = new();
@@ -52,8 +54,20 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     while (IsTruthy(Evaluate(stmt.Expression)))
     {
-      Execute(stmt.Body);
+      try
+      {
+        Execute(stmt.Body);
+      }
+      catch (BreakOutsideLoopError)
+      {
+        break;
+      }
     }
+  }
+
+  void IStmtVisitor.VisitBreakStmt(BreakStmt stmt)
+  {
+    throw new BreakOutsideLoopError(stmt.Token);
   }
 
   void IStmtVisitor.VisitPrintStmt(PrintStmt stmt)
