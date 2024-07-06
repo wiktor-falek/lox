@@ -71,6 +71,10 @@ public class Scanner(string source)
         {
           while (Peek() != '\n' && !IsAtEnd()) Advance();
         }
+        else if (Match('*'))
+        {
+          MultilineComment();
+        }
         else
         {
           AddToken(SLASH);
@@ -99,6 +103,30 @@ public class Scanner(string source)
         }
         break;
     }
+  }
+
+  private void MultilineComment()
+  {
+    while (!IsAtEnd())
+    {
+      if (Peek() == '*' && PeekNext() == '/')
+      {
+        break;
+      }
+
+      if (Peek() == '\n') Line++;
+      Advance();
+    }
+
+    if (IsAtEnd())
+    {
+      Lox.Error(Line, "Unterminated multiline string.");
+      return;
+    }
+
+    // Closing */
+    Advance();
+    Advance();
   }
 
   private void String()
