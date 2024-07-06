@@ -18,6 +18,7 @@ class GenerateAst
       "TernaryExpr  : Expr condition, Expr trueExpr, Expr falseExpr",
       "CommaExpr    : List<Expr> expressions",
       "VariableExpr : Token name",
+      "CallExpr     : Expr callee, Token paren, List<Expr> arguments",
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [

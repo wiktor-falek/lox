@@ -219,6 +219,32 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     return Environment.Get(expr.Name);
   }
 
+  object? IExprVisitor<object?>.VisitCallExpr(CallExpr expr)
+  {
+    object? callee = Evaluate(expr.Callee);
+
+    List<object?> arguments = [];
+    foreach (Expr argument in expr.Arguments)
+    {
+      arguments.Add(Evaluate(argument));
+    }
+
+    if (callee is not ILoxCallable function)
+    {
+      throw new RuntimeError(expr.Paren, "Can only call functions and classes.");
+    }
+
+    if (arguments.Count != function.Arity)
+    {
+      throw new RuntimeError(
+        expr.Paren,
+        $"Expected {function.Arity} arguments but got {arguments.Count}."
+      );
+    }
+
+    return function.Call(this, arguments);
+  }
+
   private static string Stringify(object? obj)
   {
     if (obj is null) return "nil";

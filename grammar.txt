@@ -51,7 +51,11 @@ term           → factor ( ( "-" | "+" ) factor )* ;
 factor         → unary ( ( "/" | "*" ) unary )* ;
 
 unary          → ( "!" | "-" ) unary
-               | primary ;
+               | call ;
+
+arguments      → expression ( "," expression )* ;
+
+call           → primary ( "(" arguments? ")" )* ;
                
 primary        → "true" | "false" | "nil"
                | NUMBER | STRING
