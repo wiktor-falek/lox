@@ -9,8 +9,16 @@ public class BreakOutsideLoopError(Token token) : RuntimeError(token, "Cannot br
 
 public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
-  private ScopeEnvironment Environment = new();
+  readonly ScopeEnvironment Globals;
+  private ScopeEnvironment Environment;
   public Option<object?> LastExpressionValue = Option<object?>.None();
+
+  public Interpreter()
+  {
+    Globals = Environment = new ScopeEnvironment();
+
+    Globals.Define("clock", new ClockNativeFunction());
+  }
 
   public void Interpret(List<Stmt> statements)
   {
@@ -229,7 +237,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
       arguments.Add(Evaluate(argument));
     }
 
-    if (callee is not ILoxCallable function)
+    if (callee is not LoxCallable function)
     {
       throw new RuntimeError(expr.Paren, "Can only call functions and classes.");
     }

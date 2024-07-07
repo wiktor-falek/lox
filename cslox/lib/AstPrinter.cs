@@ -74,4 +74,8 @@ class AstPrinter : IExprVisitor<R>
     return builder.ToString();
   }
 
+    public string VisitCallExpr(CallExpr expr)
+    {
+        throw new NotImplementedException();
+    }
 }
