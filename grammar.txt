@@ -1,7 +1,8 @@
 // STATEMENTS
 program        → statement* EOF ;
 
-declaration    → varDecl
+declaration    → funDecl
+               | varDecl
                | statement ;
 
 statement      → exprStmt
@@ -26,6 +27,12 @@ ifStmt         → "if" "(" expression ")" statement
 exprStmt       → expression ";" ;
 
 printStmt      → "print" expression ";" ;
+
+funDecl        → "fun" function ;
+
+function       → IDENTIFIER "(" parameters? ")" block ;
+
+parameters     → IDENTIFIER  ( "," IDENTIFIER )* ;
 
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 

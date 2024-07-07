@@ -1,4 +1,4 @@
-class ScopeEnvironment(ScopeEnvironment? enclosing = null)
+public class ScopeEnvironment(ScopeEnvironment? enclosing = null)
 {
   public readonly ScopeEnvironment? Enclosing = enclosing;
   private readonly Dictionary<string, object?> Values = [];

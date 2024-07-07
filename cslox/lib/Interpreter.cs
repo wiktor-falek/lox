@@ -9,8 +9,8 @@ public class BreakOutsideLoopError(Token token) : RuntimeError(token, "Cannot br
 
 public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
-  readonly ScopeEnvironment Globals;
-  private ScopeEnvironment Environment;
+  public readonly ScopeEnvironment Globals;
+  public ScopeEnvironment Environment;
   public Option<object?> LastExpressionValue = Option<object?>.None();
 
   public Interpreter()
@@ -101,7 +101,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     ExecuteBlock(stmt.Statements, new ScopeEnvironment(Environment));
   }
 
-  void ExecuteBlock(List<Stmt> statements, ScopeEnvironment environment)
+  public void ExecuteBlock(List<Stmt> statements, ScopeEnvironment environment)
   {
     ScopeEnvironment previous = Environment;
 
@@ -299,5 +299,11 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     if (left is double && right is double) return;
     throw new RuntimeError(op, "Operands must be numbers.");
+  }
+
+  public void VisitFunctionStmt(FunctionStmt stmt)
+  {
+    LoxFunction function = new(stmt);
+    Environment.Define(stmt.Name.Lexeme, function);
   }
 }

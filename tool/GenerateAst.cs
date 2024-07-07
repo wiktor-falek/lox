@@ -22,13 +22,14 @@ class GenerateAst
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [
-      "IfStmt    : Expr condition, Stmt thenBranch, Stmt? elseBranch",
-      "BlockStmt : List<Stmt> statements",
-      "ExprStmt  : Expr expression",
-      "PrintStmt : Expr expression",
-      "VarStmt   : Token name, Expr? initializer",
-      "WhileStmt : Expr expression, Stmt body",
-      "BreakStmt : Token token",
+      "IfStmt       : Expr condition, Stmt thenBranch, Stmt? elseBranch",
+      "BlockStmt    : List<Stmt> statements",
+      "ExprStmt     : Expr expression",
+      "PrintStmt    : Expr expression",
+      "VarStmt      : Token name, Expr? initializer",
+      "WhileStmt    : Expr expression, Stmt body",
+      "BreakStmt    : Token token",
+      "FunctionStmt : Token name, List<Token> parameters, List<Stmt> body",
     ]);
   }
 

@@ -10,6 +10,25 @@ public abstract class LoxCallable
   }
 }
 
+public class LoxFunction(FunctionStmt declaration) : LoxCallable
+{
+  public override int Arity => Declaration.Parameters.Count;
+  protected override string Name => Declaration.Name.Lexeme;
+  private readonly FunctionStmt Declaration = declaration;
+
+  public override object? Call(Interpreter interpreter, List<object?> arguments)
+  {
+    ScopeEnvironment environment = new(interpreter.Environment);
+    for (int i = 0; i < Declaration.Parameters.Count; i++)
+    {
+      environment.Define(Declaration.Parameters[i].Lexeme, arguments[i]);
+    }
+
+    interpreter.ExecuteBlock(Declaration.Body, environment);
+    return null;
+  }
+}
+
 public abstract class LoxNativeFunction : LoxCallable
 {
   public override string ToString()
@@ -18,10 +37,9 @@ public abstract class LoxNativeFunction : LoxCallable
   }
 }
 
-class ClockNativeFunction : LoxNativeFunction
+public class ClockNativeFunction : LoxNativeFunction
 {
   protected override string Name => "clock";
-
   public override int Arity => 0;
 
   public override object? Call(Interpreter interpreter, List<object?> arguments)
