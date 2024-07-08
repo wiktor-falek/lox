@@ -253,6 +253,12 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     return function.Call(this, arguments);
   }
 
+  void IStmtVisitor.VisitFunctionStmt(FunctionStmt stmt)
+  {
+    LoxFunction function = new(stmt);
+    Environment.Define(stmt.Name.Lexeme, function);
+  }
+
   private static string Stringify(object? obj)
   {
     if (obj is null) return "nil";
@@ -278,7 +284,9 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   private static bool IsTruthy(object? obj)
   {
     if (obj is null) return false;
-    if (obj is bool v) return v;
+    else if (obj is bool v) return v;
+    else if (obj is double d) return d != 0;
+    else if (obj is string s) return s.Length != 0;
     return true;
   }
 
@@ -299,11 +307,5 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     if (left is double && right is double) return;
     throw new RuntimeError(op, "Operands must be numbers.");
-  }
-
-  public void VisitFunctionStmt(FunctionStmt stmt)
-  {
-    LoxFunction function = new(stmt);
-    Environment.Define(stmt.Name.Lexeme, function);
   }
 }
