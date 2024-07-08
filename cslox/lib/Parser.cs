@@ -129,8 +129,8 @@ public class Parser(List<Token> tokens)
         if (parameters.Count >= 255)
         {
           Error(Peek(), "Can't have more than 255 parameters.");
-          parameters.Add(Consume(IDENTIFIER, "Expect parameter name."));
         }
+        parameters.Add(Consume(IDENTIFIER, "Expect parameter name."));
       } while (Match(COMMA));
     }
 
@@ -418,16 +418,22 @@ public class Parser(List<Token> tokens)
   private CallExpr FinishCall(Expr callee)
   {
     List<Expr> arguments = [];
+
     if (!Check(RIGHT_PAREN))
     {
-      do
+      Expr first = Comma();
+      if (first is CommaExpr comma)
       {
+        arguments = comma.Expressions;
         if (arguments.Count >= 255)
         {
           Error(Peek(), "Can't have more than 255 arguments.)");
         }
-        arguments.Add(Expression());
-      } while (Match(COMMA));
+      }
+      else
+      {
+        arguments.Add(first);
+      }
     }
 
     Token paren = Consume(RIGHT_PAREN, "Expect ')' after arguments.");

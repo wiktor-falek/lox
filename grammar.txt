@@ -60,9 +60,7 @@ factor         → unary ( ( "/" | "*" ) unary )* ;
 unary          → ( "!" | "-" ) unary
                | call ;
 
-arguments      → expression ( "," expression )* ;
-
-call           → primary ( "(" arguments? ")" )* ;
+call           → primary ( "(" comma? ")" )* ;
                
 primary        → "true" | "false" | "nil"
                | NUMBER | STRING

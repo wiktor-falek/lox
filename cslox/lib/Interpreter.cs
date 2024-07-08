@@ -294,6 +294,10 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     if (a is null && b is null) return true;
     if (a is null) return false;
+    // TODO: 
+    // string and bool
+    // number and bool
+
     return a.Equals(b);
   }
 
