@@ -8,3 +8,15 @@ public class ClockNativeFunction : LoxNativeFunction
     return (double)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
   }
 }
+
+public class PrintNativeFunction : LoxNativeFunction
+{
+  public override int Arity => 1;
+  protected override string Name => "print";
+
+  public override object? Call(Interpreter interpreter, List<object?> arguments)
+  {
+    Console.WriteLine(Interpreter.Stringify(arguments[0]));
+    return null;
+  }
+}

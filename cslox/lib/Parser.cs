@@ -91,7 +91,6 @@ public class Parser(List<Token> tokens)
         case FOR:
         case IF:
         case WHILE:
-        case PRINT:
         case RETURN:
           return;
       }
@@ -157,7 +156,6 @@ public class Parser(List<Token> tokens)
     if (Match(FOR)) return ForStatement();
     if (Match(WHILE)) return WhileStatement();
     if (Match(BREAK)) return BreakStatement();
-    if (Match(PRINT)) return PrintStatement();
     if (Match(LEFT_BRACE)) return new BlockStmt(Block());
 
     return ExpressionStatement();
@@ -167,14 +165,6 @@ public class Parser(List<Token> tokens)
   {
     Consume(SEMICOLON, "Expect ';' after break.");
     return new BreakStmt(Previous());
-  }
-
-  private PrintStmt PrintStatement()
-  {
-    Expr value = Expression();
-    Consume(SEMICOLON, "Expect ';' after value.");
-
-    return new PrintStmt(value);
   }
 
   private List<Stmt> Block()

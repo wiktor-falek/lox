@@ -18,6 +18,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Globals = Environment = new ScopeEnvironment();
 
     Globals.Define("clock", new ClockNativeFunction());
+    Globals.Define("print", new PrintNativeFunction());
   }
 
   public void Interpret(List<Stmt> statements)
@@ -76,12 +77,6 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   void IStmtVisitor.VisitBreakStmt(BreakStmt stmt)
   {
     throw new BreakOutsideLoopError(stmt.Token);
-  }
-
-  void IStmtVisitor.VisitPrintStmt(PrintStmt stmt)
-  {
-    object? value = Evaluate(stmt.Expression);
-    Console.WriteLine(Stringify(value));
   }
 
   void IStmtVisitor.VisitVarStmt(VarStmt stmt)
@@ -259,7 +254,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Environment.Define(stmt.Name.Lexeme, function);
   }
 
-  private static string Stringify(object? obj)
+  public static string Stringify(object? obj)
   {
     if (obj is null) return "nil";
     if (obj is double)

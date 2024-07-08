@@ -3,7 +3,6 @@ public interface IStmtVisitor
   void VisitIfStmt(IfStmt stmt);
   void VisitBlockStmt(BlockStmt stmt);
   void VisitExprStmt(ExprStmt stmt);
-  void VisitPrintStmt(PrintStmt stmt);
   void VisitVarStmt(VarStmt stmt);
   void VisitWhileStmt(WhileStmt stmt);
   void VisitBreakStmt(BreakStmt stmt);
@@ -52,18 +51,6 @@ public class ExprStmt : Stmt
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitExprStmt(this);
-  }
-}
-
-public class PrintStmt : Stmt
-{
-  public readonly Expr Expression;
-  public PrintStmt(Expr expression)  {
-    Expression = expression;
-  }
-  override public void Accept(IStmtVisitor visitor)
-  {
-    visitor.VisitPrintStmt(this);
   }
 }
 

@@ -18,7 +18,6 @@ public class Scanner(string source)
       {"if", IF},
       {"nil", NIL},
       {"or", OR},
-      {"print", PRINT},
       {"return", RETURN},
       {"super", SUPER},
       {"this", THIS},

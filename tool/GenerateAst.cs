@@ -25,7 +25,6 @@ class GenerateAst
       "IfStmt       : Expr condition, Stmt thenBranch, Stmt? elseBranch",
       "BlockStmt    : List<Stmt> statements",
       "ExprStmt     : Expr expression",
-      "PrintStmt    : Expr expression",
       "VarStmt      : Token name, Expr? initializer",
       "WhileStmt    : Expr expression, Stmt body",
       "BreakStmt    : Token token",
