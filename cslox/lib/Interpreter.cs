@@ -17,8 +17,11 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     Globals = Environment = new ScopeEnvironment();
 
-    Globals.Define("clock", new ClockNativeFunction());
     Globals.Define("print", new PrintNativeFunction());
+    Globals.Define("input", new InputNativeFunction());
+    Globals.Define("clock", new ClockNativeFunction());
+    Globals.Define("rand", new RandNativeFunction());
+    Globals.Define("exit", new ExitNativeFunction());
   }
 
   public void Interpret(List<Stmt> statements)
