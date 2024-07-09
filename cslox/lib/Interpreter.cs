@@ -5,7 +5,12 @@ public class RuntimeError(Token token, string message) : SystemException(message
   public readonly Token Token = token;
 }
 
-public class BreakOutsideLoopError(Token token) : RuntimeError(token, "Cannot break outside of a loop.");
+public class Break(Token token) : RuntimeError(token, "Cannot break outside of a loop.");
+
+public class Return(Token token, object? value) : RuntimeError(token, "Cannot return outside of a function.")
+{
+  public readonly object? Value = value;
+}
 
 public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
@@ -70,7 +75,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
       {
         Execute(stmt.Body);
       }
-      catch (BreakOutsideLoopError)
+      catch (Break)
       {
         break;
       }
@@ -79,7 +84,24 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitBreakStmt(BreakStmt stmt)
   {
-    throw new BreakOutsideLoopError(stmt.Token);
+    throw new Break(stmt.Token);
+  }
+
+  void IStmtVisitor.VisitReturnStmt(ReturnStmt stmt)
+  {
+    object? value = null;
+    if (stmt.Value is not null)
+    {
+      value = Evaluate(stmt.Value);
+    }
+
+    throw new Return(stmt.Keyword, value);
+  }
+
+  void IStmtVisitor.VisitFunctionStmt(FunctionStmt stmt)
+  {
+    LoxFunction function = new(stmt);
+    Environment.Define(stmt.Name.Lexeme, function);
   }
 
   void IStmtVisitor.VisitVarStmt(VarStmt stmt)
@@ -249,12 +271,6 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     }
 
     return function.Call(this, arguments);
-  }
-
-  void IStmtVisitor.VisitFunctionStmt(FunctionStmt stmt)
-  {
-    LoxFunction function = new(stmt);
-    Environment.Define(stmt.Name.Lexeme, function);
   }
 
   public static string Stringify(object? obj)

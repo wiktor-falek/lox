@@ -25,7 +25,15 @@ public class LoxFunction(FunctionStmt declaration) : LoxCallable
       environment.Define(Declaration.Parameters[i].Lexeme, arguments[i]);
     }
 
-    interpreter.ExecuteBlock(Declaration.Body, environment);
+    try
+    {
+      interpreter.ExecuteBlock(Declaration.Body, environment);
+    }
+    catch (Return returnValue)
+    {
+      return returnValue.Value;
+    }
+
     return null;
   }
 }

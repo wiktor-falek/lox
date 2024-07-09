@@ -7,6 +7,7 @@ public interface IStmtVisitor
   void VisitWhileStmt(WhileStmt stmt);
   void VisitBreakStmt(BreakStmt stmt);
   void VisitFunctionStmt(FunctionStmt stmt);
+  void VisitReturnStmt(ReturnStmt stmt);
 }
 
 abstract public class Stmt
@@ -107,5 +108,19 @@ public class FunctionStmt : Stmt
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitFunctionStmt(this);
+  }
+}
+
+public class ReturnStmt : Stmt
+{
+  public readonly Token Keyword;
+  public readonly Expr? Value;
+  public ReturnStmt(Token keyword, Expr? value)  {
+    Keyword = keyword;
+    Value = value;
+  }
+  override public void Accept(IStmtVisitor visitor)
+  {
+    visitor.VisitReturnStmt(this);
   }
 }

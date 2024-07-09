@@ -6,13 +6,16 @@ declaration    → funDecl
                | statement ;
 
 statement      → exprStmt
+               | returnStmt
                | breakStmt 
                | forStmt
                | whileStmt
                | ifStmt
                | block ;
 
-breakStmt
+returnStmt     → "return" expression? ";" ;
+
+breakStmt      → "break" ";" ;
 
 forStmt        → "for" "(" ( varDecl | exprStmt | ";" ) 
                  expression? ";"

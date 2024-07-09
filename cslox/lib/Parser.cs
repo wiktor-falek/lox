@@ -156,9 +156,18 @@ public class Parser(List<Token> tokens)
     if (Match(FOR)) return ForStatement();
     if (Match(WHILE)) return WhileStatement();
     if (Match(BREAK)) return BreakStatement();
+    if (Match(RETURN)) return ReturnStatement();
     if (Match(LEFT_BRACE)) return new BlockStmt(Block());
 
     return ExpressionStatement();
+  }
+
+  private ReturnStmt ReturnStatement()
+  {
+    Token keyword = Previous();
+    Expr? value = Check(SEMICOLON) ? null : Expression();
+    Consume(SEMICOLON, "Expect ';' after return value.");
+    return new ReturnStmt(keyword, value);
   }
 
   private BreakStmt BreakStatement()

@@ -29,6 +29,7 @@ class GenerateAst
       "WhileStmt    : Expr expression, Stmt body",
       "BreakStmt    : Token token",
       "FunctionStmt : Token name, List<Token> parameters, List<Stmt> body",
+      "ReturnStmt   : Token keyword, Expr? value",
     ]);
   }
 

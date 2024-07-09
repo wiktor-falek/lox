@@ -1,32 +1,25 @@
-var True = 1 == 1;
-var False = 1 != 1;
+fun mod(a, n) {
+  while (a >= 0) {
+    a = a - n;
+  }
+  return a + n;
+}
 
 for (var i = 1; i < 16; i = i + 1) {
-  var mod3 = i;
-  var mod5 = i;
-
-  while (mod3 >= 0) {
-    mod3 = mod3 - 3;
-  }
-  
-  while (mod5 >= 0) {
-    mod5 = mod5 - 5;
-  }
-
-  mod3 = mod3 + 3;
-  mod5 = mod5 + 5;  
+  var mod3 = mod(i, 3);
+  var mod5 = mod(i, 5);
 
   if (mod3 == 0) {
     if (mod5 == 0) {
-      print "FizzBuzz";
+      print("FizzBuzz");
     } else {
-      print "Fizz";
+      print("Fizz");
     }
   } else {
     if (mod5 == 0) {
-      print "Buzz";
+      print("Buzz");
     } else {
-      print i;
+      print(i);
     }
   }
 }
