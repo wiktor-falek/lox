@@ -1,3 +1,11 @@
+public abstract class LoxNativeFunction : LoxCallable
+{
+  public override string ToString()
+  {
+    return $"<built-in function {Name}>";
+  }
+}
+
 public class PrintNativeFunction : LoxNativeFunction
 {
   public override int Arity => 1;

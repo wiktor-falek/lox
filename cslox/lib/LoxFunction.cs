@@ -19,6 +19,7 @@ public class LoxFunction(FunctionStmt declaration) : LoxCallable
   public override object? Call(Interpreter interpreter, List<object?> arguments)
   {
     ScopeEnvironment environment = new(interpreter.Environment);
+
     for (int i = 0; i < Declaration.Parameters.Count; i++)
     {
       environment.Define(Declaration.Parameters[i].Lexeme, arguments[i]);
@@ -26,13 +27,5 @@ public class LoxFunction(FunctionStmt declaration) : LoxCallable
 
     interpreter.ExecuteBlock(Declaration.Body, environment);
     return null;
-  }
-}
-
-public abstract class LoxNativeFunction : LoxCallable
-{
-  public override string ToString()
-  {
-    return $"<built-in function {Name}>";
   }
 }
