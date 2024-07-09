@@ -64,7 +64,7 @@ class Lox
       Option<object?> lastExpressionValue = Interpreter.LastExpressionValue;
       if (lastExpressionValue.IsSome)
       {
-        Console.WriteLine(lastExpressionValue.Value ?? "nil");
+        Console.WriteLine(Interpreter.Stringify(lastExpressionValue.Value ?? "nil"));
       }
       Interpreter.LastExpressionValue = Option<object?>.None();
       HadError = false;

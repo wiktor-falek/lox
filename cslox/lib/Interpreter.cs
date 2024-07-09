@@ -25,6 +25,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Globals.Define("print", new PrintNativeFunction());
     Globals.Define("input", new InputNativeFunction());
     Globals.Define("clock", new ClockNativeFunction());
+    Globals.Define("int", new IntNativeFunction());
     Globals.Define("rand", new RandNativeFunction());
     Globals.Define("exit", new ExitNativeFunction());
   }
@@ -188,7 +189,15 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
         else if (left is string ls && right is string rs)
         {
           return ls + rs;
-        };
+        }
+        else if (left is string && right is double)
+        {
+          return left + right.ToString();
+        }
+        else if (left is double && right is string)
+        {
+          return left.ToString() + right;
+        }
         throw new RuntimeError(expr.Op, "Operands must be two numbers or two strings.");
       case MINUS:
         CheckNumberOperands(expr.Op, left, right);
@@ -324,6 +333,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   private static void CheckNumberOperands(Token op, object? left, object? right)
   {
     if (left is double && right is double) return;
+
     throw new RuntimeError(op, "Operands must be numbers.");
   }
 }

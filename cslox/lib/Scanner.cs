@@ -93,7 +93,7 @@ public class Scanner(string source)
         {
           Number();
         }
-        else if (char.IsLetter(c))
+        else if (char.IsLetter(c) || c == '_')
         {
           Identifier();
         }
@@ -168,7 +168,7 @@ public class Scanner(string source)
 
   private void Identifier()
   {
-    while (char.IsLetterOrDigit(Peek())) Advance();
+    while (char.IsLetterOrDigit(Peek()) || Peek() == '_') Advance();
 
     string text = Source[Start..Current];
 

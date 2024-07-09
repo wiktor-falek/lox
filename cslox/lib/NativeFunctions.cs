@@ -40,6 +40,22 @@ public class ClockNativeFunction : LoxNativeFunction
   }
 }
 
+public class IntNativeFunction : LoxNativeFunction
+{
+  public override int Arity => 1;
+  protected override string Name => "int";
+
+  public override object? Call(Interpreter interpreter, List<object?> arguments)
+  {
+    if (arguments[0] is double num)
+    {
+      return (double)(int)num;
+    }
+
+    throw new NotImplementedException();
+  }
+}
+
 public class RandNativeFunction : LoxNativeFunction
 {
   public override int Arity => 0;
@@ -63,9 +79,7 @@ public class ExitNativeFunction : LoxNativeFunction
       Environment.Exit((int)code);
       return null;
     }
-    else
-    {
-      throw new NotImplementedException();
-    }
+
+    throw new NotImplementedException();
   }
 }
