@@ -103,7 +103,15 @@ public class Parser(List<Token> tokens)
   {
     try
     {
-      if (Match(FUN)) return Function("function");
+      if (Match(FUN))
+      {
+        if (!Check(IDENTIFIER))
+        {
+          Current -= 1; // go back to FUN to match the lambda expression later
+          return ExpressionStatement();
+        }
+        return Function("function");
+      }
       if (Match(VAR)) return VarDeclaration();
       return Statement();
     }
@@ -258,6 +266,7 @@ public class Parser(List<Token> tokens)
   private ExprStmt ExpressionStatement()
   {
     Expr expr = Expression();
+
     Consume(SEMICOLON, "Expect ';' after expression.");
 
     return new ExprStmt(expr);

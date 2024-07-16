@@ -1,3 +1,11 @@
+// test lambda expression statement
+fun () { };
+
+// test IIFE
+fun () { 
+  return nil;
+}();
+
 fun thrice(fn) {
   for (var i = 0; i < 3; i = i + 1) {
     fn(i);
@@ -6,4 +14,4 @@ fun thrice(fn) {
 
 thrice(fun (n) {
   print(n);
-})
+});
