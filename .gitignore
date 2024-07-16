@@ -2,4 +2,4 @@
 .vscode
 bin/
 obj/
-examples/script.txt
+cslox/examples/script.txt
