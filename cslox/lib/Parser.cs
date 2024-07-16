@@ -107,7 +107,7 @@ public class Parser(List<Token> tokens)
       {
         if (!Check(IDENTIFIER))
         {
-          Current -= 1; // go back to FUN to match the lambda expression later
+          Current--; // go back to FUN to match the lambda expression later
           return ExpressionStatement();
         }
         return Function("function");
