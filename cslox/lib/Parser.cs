@@ -114,11 +114,9 @@ public class Parser(List<Token> tokens)
     }
   }
 
-  private FunctionStmt Function(string kind)
+  private Stmt Function(string kind)
   {
-    Token name = Consume(IDENTIFIER, $"Expect {kind} name.");
-    Consume(LEFT_PAREN, $"Expect '( after {kind} name.");
-
+    Token? name = Match(IDENTIFIER) ? Previous() : null;
     List<Token> parameters = [];
 
     if (!Check(RIGHT_PAREN))
@@ -137,6 +135,11 @@ public class Parser(List<Token> tokens)
 
     Consume(LEFT_BRACE, $"Expect '{{' before {kind} body.");
     List<Stmt> body = Block();
+
+    if (name is null)
+    {
+      return new LambdaFunctionStmt(parameters, body);
+    }
 
     return new FunctionStmt(name, parameters, body);
   }
