@@ -118,6 +118,8 @@ public class Parser(List<Token> tokens)
   {
     Token? name = Match(IDENTIFIER) ? Previous() : null;
     List<Token> parameters = [];
+    
+    Consume(LEFT_PAREN, $"Expect '( after {kind} name.");
 
     if (!Check(RIGHT_PAREN))
     {
