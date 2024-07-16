@@ -1,14 +1,9 @@
 fun thrice(fn) {
   for (var i = 0; i < 3; i = i + 1) {
-    fn();
+    fn(i);
   }
 }
 
-fun function() {
-  print("function");
-}
-
-thrice(function);
-thrice(fun () {
-  print("lambda");
-});
+thrice(fun (n) {
+  print(n);
+})
