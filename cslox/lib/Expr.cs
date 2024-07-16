@@ -16,124 +16,98 @@ abstract public class Expr
   abstract public R Accept<R>(IExprVisitor<R> visitor);
 }
 
-public class AssignExpr : Expr
+public class AssignExpr(Token name, Expr value) : Expr
 {
-  public readonly Token Name;
-  public readonly Expr Value;
-  public AssignExpr(Token name, Expr value)  {
-    Name = name;
-    Value = value;
-  }
+  public readonly Token Name = name;
+  public readonly Expr Value = value;
+
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitAssignExpr(this);
   }
 }
 
-public class BinaryExpr : Expr
+public class BinaryExpr(Expr left, Token op, Expr right) : Expr
 {
-  public readonly Expr Left;
-  public readonly Token Op;
-  public readonly Expr Right;
-  public BinaryExpr(Expr left, Token op, Expr right)  {
-    Left = left;
-    Op = op;
-    Right = right;
-  }
+  public readonly Expr Left = left;
+  public readonly Token Op = op;
+  public readonly Expr Right = right;
+
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitBinaryExpr(this);
   }
 }
 
-public class GroupingExpr : Expr
+public class GroupingExpr(Expr expression) : Expr
 {
-  public readonly Expr Expression;
-  public GroupingExpr(Expr expression)  {
-    Expression = expression;
-  }
+  public readonly Expr Expression = expression;
+
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitGroupingExpr(this);
   }
 }
 
-public class LiteralExpr : Expr
+public class LiteralExpr(object? value) : Expr
 {
-  public readonly object? Value;
-  public LiteralExpr(object? value)  {
-    Value = value;
-  }
+  public readonly object? Value = value;
+
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitLiteralExpr(this);
   }
 }
 
-public class UnaryExpr : Expr
+public class UnaryExpr(Token op, Expr right) : Expr
 {
-  public readonly Token Op;
-  public readonly Expr Right;
-  public UnaryExpr(Token op, Expr right)  {
-    Op = op;
-    Right = right;
-  }
+  public readonly Token Op = op;
+  public readonly Expr Right = right;
+
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitUnaryExpr(this);
   }
 }
 
-public class TernaryExpr : Expr
+public class TernaryExpr(Expr condition, Expr trueExpr, Expr falseExpr) : Expr
 {
-  public readonly Expr Condition;
-  public readonly Expr TrueExpr;
-  public readonly Expr FalseExpr;
-  public TernaryExpr(Expr condition, Expr trueExpr, Expr falseExpr)  {
-    Condition = condition;
-    TrueExpr = trueExpr;
-    FalseExpr = falseExpr;
-  }
+  public readonly Expr Condition = condition;
+  public readonly Expr TrueExpr = trueExpr;
+  public readonly Expr FalseExpr = falseExpr;
+
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitTernaryExpr(this);
   }
 }
 
-public class CommaExpr : Expr
+public class CommaExpr(List<Expr> expressions) : Expr
 {
-  public readonly List<Expr> Expressions;
-  public CommaExpr(List<Expr> expressions)  {
-    Expressions = expressions;
-  }
+  public readonly List<Expr> Expressions = expressions;
+
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitCommaExpr(this);
   }
 }
 
-public class VariableExpr : Expr
+public class VariableExpr(Token name) : Expr
 {
-  public readonly Token Name;
-  public VariableExpr(Token name)  {
-    Name = name;
-  }
+  public readonly Token Name = name;
+
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitVariableExpr(this);
   }
 }
 
-public class CallExpr : Expr
+public class CallExpr(Expr callee, Token paren, List<Expr> arguments) : Expr
 {
-  public readonly Expr Callee;
-  public readonly Token Paren;
-  public readonly List<Expr> Arguments;
-  public CallExpr(Expr callee, Token paren, List<Expr> arguments)  {
-    Callee = callee;
-    Paren = paren;
-    Arguments = arguments;
-  }
+  public readonly Expr Callee = callee;
+  public readonly Token Paren = paren;
+  public readonly List<Expr> Arguments = arguments;
+
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitCallExpr(this);

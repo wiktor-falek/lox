@@ -7,6 +7,7 @@ public interface IStmtVisitor
   void VisitWhileStmt(WhileStmt stmt);
   void VisitBreakStmt(BreakStmt stmt);
   void VisitFunctionStmt(FunctionStmt stmt);
+  void VisitLambdaFunctionStmt(LambdaFunctionStmt stmt);
   void VisitReturnStmt(ReturnStmt stmt);
 }
 
@@ -15,110 +16,98 @@ abstract public class Stmt
   abstract public void Accept(IStmtVisitor visitor);
 }
 
-public class IfStmt : Stmt
+public class IfStmt(Expr condition, Stmt thenBranch, Stmt? elseBranch) : Stmt
 {
-  public readonly Expr Condition;
-  public readonly Stmt ThenBranch;
-  public readonly Stmt? ElseBranch;
-  public IfStmt(Expr condition, Stmt thenBranch, Stmt? elseBranch)  {
-    Condition = condition;
-    ThenBranch = thenBranch;
-    ElseBranch = elseBranch;
-  }
+  public readonly Expr Condition = condition;
+  public readonly Stmt ThenBranch = thenBranch;
+  public readonly Stmt? ElseBranch = elseBranch;
+
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitIfStmt(this);
   }
 }
 
-public class BlockStmt : Stmt
+public class BlockStmt(List<Stmt> statements) : Stmt
 {
-  public readonly List<Stmt> Statements;
-  public BlockStmt(List<Stmt> statements)  {
-    Statements = statements;
-  }
+  public readonly List<Stmt> Statements = statements;
+
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitBlockStmt(this);
   }
 }
 
-public class ExprStmt : Stmt
+public class ExprStmt(Expr expression) : Stmt
 {
-  public readonly Expr Expression;
-  public ExprStmt(Expr expression)  {
-    Expression = expression;
-  }
+  public readonly Expr Expression = expression;
+
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitExprStmt(this);
   }
 }
 
-public class VarStmt : Stmt
+public class VarStmt(Token name, Expr? initializer) : Stmt
 {
-  public readonly Token Name;
-  public readonly Expr? Initializer;
-  public VarStmt(Token name, Expr? initializer)  {
-    Name = name;
-    Initializer = initializer;
-  }
+  public readonly Token Name = name;
+  public readonly Expr? Initializer = initializer;
+
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitVarStmt(this);
   }
 }
 
-public class WhileStmt : Stmt
+public class WhileStmt(Expr expression, Stmt body) : Stmt
 {
-  public readonly Expr Expression;
-  public readonly Stmt Body;
-  public WhileStmt(Expr expression, Stmt body)  {
-    Expression = expression;
-    Body = body;
-  }
+  public readonly Expr Expression = expression;
+  public readonly Stmt Body = body;
+
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitWhileStmt(this);
   }
 }
 
-public class BreakStmt : Stmt
+public class BreakStmt(Token token) : Stmt
 {
-  public readonly Token Token;
-  public BreakStmt(Token token)  {
-    Token = token;
-  }
+  public readonly Token Token = token;
+
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitBreakStmt(this);
   }
 }
 
-public class FunctionStmt : Stmt
+public class FunctionStmt(Token name, List<Token> parameters, List<Stmt> body) : Stmt
 {
-  public readonly Token Name;
-  public readonly List<Token> Parameters;
-  public readonly List<Stmt> Body;
-  public FunctionStmt(Token name, List<Token> parameters, List<Stmt> body)  {
-    Name = name;
-    Parameters = parameters;
-    Body = body;
-  }
+  public readonly Token Name = name;
+  public readonly List<Token> Parameters = parameters;
+  public readonly List<Stmt> Body = body;
+
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitFunctionStmt(this);
   }
 }
 
-public class ReturnStmt : Stmt
+public class LambdaFunctionStmt(List<Token> parameters, List<Stmt> body) : Stmt
 {
-  public readonly Token Keyword;
-  public readonly Expr? Value;
-  public ReturnStmt(Token keyword, Expr? value)  {
-    Keyword = keyword;
-    Value = value;
+  public readonly List<Token> Parameters = parameters;
+  public readonly List<Stmt> Body = body;
+
+  override public void Accept(IStmtVisitor visitor)
+  {
+    visitor.VisitLambdaFunctionStmt(this);
   }
+}
+
+public class ReturnStmt(Token keyword, Expr? value) : Stmt
+{
+  public readonly Token Keyword = keyword;
+  public readonly Expr? Value = value;
+
   override public void Accept(IStmtVisitor visitor)
   {
     visitor.VisitReturnStmt(this);

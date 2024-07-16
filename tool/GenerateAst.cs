@@ -22,14 +22,15 @@ class GenerateAst
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [
-      "IfStmt       : Expr condition, Stmt thenBranch, Stmt? elseBranch",
-      "BlockStmt    : List<Stmt> statements",
-      "ExprStmt     : Expr expression",
-      "VarStmt      : Token name, Expr? initializer",
-      "WhileStmt    : Expr expression, Stmt body",
-      "BreakStmt    : Token token",
-      "FunctionStmt : Token name, List<Token> parameters, List<Stmt> body",
-      "ReturnStmt   : Token keyword, Expr? value",
+      "IfStmt             : Expr condition, Stmt thenBranch, Stmt? elseBranch",
+      "BlockStmt          : List<Stmt> statements",
+      "ExprStmt           : Expr expression",
+      "VarStmt            : Token name, Expr? initializer",
+      "WhileStmt          : Expr expression, Stmt body",
+      "BreakStmt          : Token token",
+      "FunctionStmt       : Token name, List<Token> parameters, List<Stmt> body",
+      "LambdaFunctionStmt : List<Token> parameters, List<Stmt> body",
+      "ReturnStmt         : Token keyword, Expr? value",
     ]);
   }
 
@@ -73,51 +74,43 @@ class GenerateAst
   {
     IEnumerable<string> fields = fieldList.Split(",").Select(e => e.Trim());
 
-    writer.WriteLine($"\npublic class {className} : {baseName}");
+    writer.Write($"\npublic class {className}(");
+    {
+      foreach (string field in fields)
+      {
+        string fieldType = field.Split(" ")[0];
+        string fieldName = field.Split(" ")[1];
+
+        if (field != fields.Last())
+        {
+          writer.Write($"{fieldType} {fieldName}, ");
+        }
+        else
+        {
+          writer.Write($"{fieldType} {fieldName})");
+        }
+      }
+    }
+    writer.WriteLine($" : {baseName}");
     writer.WriteLine("{");
     foreach (string field in fields)
     {
       string fieldType = field.Split(" ")[0];
       string fieldName = field.Split(" ")[1];
       string capitalizedFieldName = fieldName[..1].ToUpper() + fieldName[1..];
-      writer.WriteLine($"  public readonly {fieldType} {capitalizedFieldName};");
+      writer.WriteLine($"  public readonly {fieldType} {capitalizedFieldName} = {fieldName};");
     }
-    writer.Write($"  public {className}(");
-
-    string last = fields.Last();
-    foreach (string field in fields)
-    {
-      string fieldType = field.Split(" ")[0];
-      string fieldName = field.Split(" ")[1];
-
-      if (field != last)
-      {
-        writer.Write($"{fieldType} {fieldName}, ");
-      }
-      else
-      {
-        writer.Write($"{fieldType} {fieldName})");
-      }
-    }
-    writer.WriteLine("  {");
-    foreach (string field in fields)
-    {
-      string fieldName = field.Split(" ")[1];
-      string capitalizedFieldName = fieldName[..1].ToUpper() + fieldName[1..];
-      writer.WriteLine($"    {capitalizedFieldName} = {fieldName};");
-    }
-    writer.WriteLine("  }");
 
     if (visitorReturnType == "void")
     {
-      writer.WriteLine($"  override public void Accept(I{baseName}Visitor visitor)");
+      writer.WriteLine($"\n  override public void Accept(I{baseName}Visitor visitor)");
       writer.WriteLine("  {");
       writer.WriteLine($"    visitor.Visit{className}(this);");
       writer.WriteLine("  }");
     }
     else
     {
-      writer.WriteLine($"  override public R Accept<R>(I{baseName}Visitor<R> visitor)");
+      writer.WriteLine($"\n  override public R Accept<R>(I{baseName}Visitor<R> visitor)");
       writer.WriteLine("  {");
       writer.WriteLine($"    return visitor.Visit{className}(this);");
       writer.WriteLine("  }");
