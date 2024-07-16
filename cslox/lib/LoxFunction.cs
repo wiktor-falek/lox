@@ -10,15 +10,16 @@ public abstract class LoxCallable
   }
 }
 
-public class LoxFunction(FunctionStmt declaration) : LoxCallable
+public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure) : LoxCallable
 {
   public override int Arity => Declaration.Parameters.Count;
   protected override string Name => Declaration.Name.Lexeme;
   private readonly FunctionStmt Declaration = declaration;
+  private readonly ScopeEnvironment Closure = closure;
 
   public override object? Call(Interpreter interpreter, List<object?> arguments)
   {
-    ScopeEnvironment environment = new(interpreter.Environment);
+    ScopeEnvironment environment = new(Closure);
 
     for (int i = 0; i < Declaration.Parameters.Count; i++)
     {

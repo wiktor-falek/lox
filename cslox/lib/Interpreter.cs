@@ -101,7 +101,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitFunctionStmt(FunctionStmt stmt)
   {
-    LoxFunction function = new(stmt);
+    LoxFunction function = new(stmt, Environment);
     Environment.Define(stmt.Name.Lexeme, function);
   }
 
@@ -307,7 +307,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   private static bool IsTruthy(object? obj)
   {
     if (obj is null) return false;
-    else if (obj is bool v) return v;
+    else if (obj is bool b) return b;
     else if (obj is double d) return d != 0;
     else if (obj is string s) return s.Length != 0;
     return true;
