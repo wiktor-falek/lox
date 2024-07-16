@@ -114,12 +114,12 @@ public class Parser(List<Token> tokens)
     }
   }
 
-  private Stmt Function(string kind)
+  private FunctionStmt Function(string kind)
   {
-    Token? name = Match(IDENTIFIER) ? Previous() : null;
-    List<Token> parameters = [];
-    
+    Token name = Consume(IDENTIFIER, $"Expect {kind} name.");
     Consume(LEFT_PAREN, $"Expect '( after {kind} name.");
+
+    List<Token> parameters = [];
 
     if (!Check(RIGHT_PAREN))
     {
@@ -137,11 +137,6 @@ public class Parser(List<Token> tokens)
 
     Consume(LEFT_BRACE, $"Expect '{{' before {kind} body.");
     List<Stmt> body = Block();
-
-    if (name is null)
-    {
-      return new LambdaFunctionStmt(parameters, body);
-    }
 
     return new FunctionStmt(name, parameters, body);
   }
@@ -456,8 +451,6 @@ public class Parser(List<Token> tokens)
       return new LiteralExpr(Previous().Literal);
     }
 
-    if (Match(IDENTIFIER)) return new VariableExpr(Previous());
-
     if (Match(LEFT_PAREN))
     {
       Expr expr = Expression();
@@ -465,6 +458,36 @@ public class Parser(List<Token> tokens)
       return new GroupingExpr(expr);
     }
 
+    if (Match(IDENTIFIER)) return new VariableExpr(Previous());
+
+    if (Match(FUN)) return Lambda();
+
     throw Error(Peek(), "Expect expression.");
+  }
+
+  private LambdaExpr Lambda()
+  {
+    Consume(LEFT_PAREN, $"Expect '( after lambda function.");
+
+    List<Token> parameters = [];
+
+    if (!Check(RIGHT_PAREN))
+    {
+      do
+      {
+        if (parameters.Count >= 255)
+        {
+          Error(Peek(), "Can't have more than 255 parameters.");
+        }
+        parameters.Add(Consume(IDENTIFIER, "Expect parameter name."));
+      } while (Match(COMMA));
+    }
+
+    Consume(RIGHT_PAREN, "Expect ')' after parameters.");
+
+    Consume(LEFT_BRACE, $"Expect '{{' before lambda body.");
+    List<Stmt> body = Block();
+
+    return new LambdaExpr(parameters, body);
   }
 }

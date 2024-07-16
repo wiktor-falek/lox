@@ -65,4 +65,7 @@ call           → primary ( "(" comma? ")" )* ;
 primary        → "true" | "false" | "nil"
                | NUMBER | STRING
                | "(" expression ")"
-               | IDENTIFIER ;
+               | IDENTIFIER 
+               | lambda ;
+
+lambda         → "fun" "(" parameters? ")" block ;

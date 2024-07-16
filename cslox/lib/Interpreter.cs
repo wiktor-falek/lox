@@ -282,6 +282,11 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     return function.Call(this, arguments);
   }
 
+  object? IExprVisitor<object?>.VisitLambdaExpr(LambdaExpr expr)
+  {
+    return new LoxLambdaFunction(expr, Environment);
+  }
+
   public static string Stringify(object? obj)
   {
     if (obj is null) return "nil";

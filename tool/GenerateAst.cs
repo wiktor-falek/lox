@@ -19,6 +19,7 @@ class GenerateAst
       "CommaExpr    : List<Expr> expressions",
       "VariableExpr : Token name",
       "CallExpr     : Expr callee, Token paren, List<Expr> arguments",
+      "LambdaExpr   : List<Token> parameters, List<Stmt> body",
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [
@@ -29,7 +30,6 @@ class GenerateAst
       "WhileStmt          : Expr expression, Stmt body",
       "BreakStmt          : Token token",
       "FunctionStmt       : Token name, List<Token> parameters, List<Stmt> body",
-      "LambdaFunctionStmt : List<Token> parameters, List<Stmt> body",
       "ReturnStmt         : Token keyword, Expr? value",
     ]);
   }

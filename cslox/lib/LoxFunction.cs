@@ -38,3 +38,32 @@ public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure) : L
     return null;
   }
 }
+
+public class LoxLambdaFunction(LambdaExpr declaration, ScopeEnvironment closure) : LoxCallable
+{
+  public override int Arity => Declaration.Parameters.Count;
+  protected override string Name => "(anonymous)";
+  private readonly LambdaExpr Declaration = declaration;
+  private readonly ScopeEnvironment Closure = closure;
+
+  public override object? Call(Interpreter interpreter, List<object?> arguments)
+  {
+    ScopeEnvironment environment = new(Closure);
+
+    for (int i = 0; i < Declaration.Parameters.Count; i++)
+    {
+      environment.Define(Declaration.Parameters[i].Lexeme, arguments[i]);
+    }
+
+    try
+    {
+      interpreter.ExecuteBlock(Declaration.Body, environment);
+    }
+    catch (Return returnValue)
+    {
+      return returnValue.Value;
+    }
+
+    return null;
+  }
+}

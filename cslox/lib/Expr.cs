@@ -9,6 +9,7 @@ public interface IExprVisitor<R>
   R VisitCommaExpr(CommaExpr expr);
   R VisitVariableExpr(VariableExpr expr);
   R VisitCallExpr(CallExpr expr);
+  R VisitLambdaExpr(LambdaExpr expr);
 }
 
 abstract public class Expr
@@ -111,5 +112,16 @@ public class CallExpr(Expr callee, Token paren, List<Expr> arguments) : Expr
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitCallExpr(this);
+  }
+}
+
+public class LambdaExpr(List<Token> parameters, List<Stmt> body) : Expr
+{
+  public readonly List<Token> Parameters = parameters;
+  public readonly List<Stmt> Body = body;
+
+  override public R Accept<R>(IExprVisitor<R> visitor)
+  {
+    return visitor.VisitLambdaExpr(this);
   }
 }
