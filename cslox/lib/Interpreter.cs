@@ -90,7 +90,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitBreakStmt(BreakStmt stmt)
   {
-    throw new Break(stmt.Token);
+    throw new Break(stmt.Keyword);
   }
 
   void IStmtVisitor.VisitReturnStmt(ReturnStmt stmt)

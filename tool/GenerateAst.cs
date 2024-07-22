@@ -9,6 +9,7 @@ class GenerateAst
     }
 
     string outputDir = args[0];
+
     DefineAst(outputDir, "Expr", "object?", [
       "AssignExpr   : Token name, Expr value",
       "BinaryExpr   : Expr left, Token op, Expr right",
@@ -28,7 +29,7 @@ class GenerateAst
       "ExprStmt     : Expr expression",
       "VarStmt      : Token name, Expr? initializer",
       "WhileStmt    : Expr expression, Stmt body",
-      "BreakStmt    : Token token",
+      "BreakStmt    : Token keyword",
       "FunctionStmt : Token name, List<Token> parameters, List<Stmt> body",
       "ReturnStmt   : Token keyword, Expr? value",
     ]);
@@ -63,7 +64,6 @@ class GenerateAst
 
     foreach (string type in types)
     {
-
       string className = type.Split(":")[0].Trim();
       string fields = type.Split(":")[1].Trim();
       DefineType(writer, baseName, className, visitorReturnType, fields);

@@ -69,9 +69,9 @@ public class WhileStmt(Expr expression, Stmt body) : Stmt
   }
 }
 
-public class BreakStmt(Token token) : Stmt
+public class BreakStmt(Token keyword) : Stmt
 {
-  public readonly Token Token = token;
+  public readonly Token Keyword = keyword;
 
   override public void Accept(IStmtVisitor visitor)
   {
