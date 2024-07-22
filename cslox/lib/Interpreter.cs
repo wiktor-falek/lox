@@ -30,6 +30,11 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Globals.Define("exit", new ExitNativeFunction());
   }
 
+  public void Resolve(Expr expression, int amogus)
+  {
+    throw new NotImplementedException();
+  }
+
   public void Interpret(List<Stmt> statements)
   {
     try
