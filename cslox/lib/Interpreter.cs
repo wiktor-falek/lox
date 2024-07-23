@@ -63,14 +63,24 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitIfStmt(IfStmt stmt)
   {
-    if (IsTruthy(Evaluate(stmt.Condition)))
+    List<IfStmt> ifStatements = [stmt, .. stmt.ElseIfStatements];
+
+    bool executedIfStmt = false;
+
+    foreach (var ifStatement in ifStatements)
     {
-      Execute(stmt.ThenBranch);
+      if (IsTruthy(Evaluate(ifStatement.Condition)))
+      {
+        Execute(ifStatement.ThenBranch);
+        executedIfStmt = true;
+        break;
+      }
     }
-    else if (stmt.ElseBranch is not null)
+
+    if (!executedIfStmt && stmt.ElseBranch is not null)
     {
       Execute(stmt.ElseBranch);
-    };
+    }
   }
 
   void IStmtVisitor.VisitWhileStmt(WhileStmt stmt)
@@ -156,6 +166,22 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   object? IExprVisitor<object?>.VisitLiteralExpr(LiteralExpr expr)
   {
     return expr.Value;
+  }
+
+  object? IExprVisitor<object?>.VisitLogicalExpr(LogicalExpr expr)
+  {
+    object? left = Evaluate(expr.Left);
+
+    if (expr.Op.Type == OR)
+    {
+      if (IsTruthy(left)) return left;
+    }
+    else
+    {
+      if (!IsTruthy(left)) return left;
+    }
+
+    return Evaluate(expr.Right);
   }
 
   object? IExprVisitor<object?>.VisitGroupingExpr(GroupingExpr expr)

@@ -93,6 +93,13 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     return default;
   }
 
+  Void IExprVisitor<Void>.VisitLogicalExpr(LogicalExpr expr)
+  {
+    Resolve(expr.Left);
+    Resolve(expr.Right);
+    return default;
+  }
+
   Void IExprVisitor<Void>.VisitUnaryExpr(UnaryExpr expr)
   {
     Resolve(expr.Right);

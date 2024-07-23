@@ -24,6 +24,7 @@ forStmt        → "for" "(" ( varDecl | exprStmt | ";" )
 whileStmt      → "while" "(" expression ")" statement ;
 
 ifStmt         → "if" "(" expression ")" statement
+               ( "else" "if" "(" expression ")" statement )*
                ( "else" statement )? ;
 
 exprStmt       → expression ";" ;
@@ -45,7 +46,11 @@ expression     → assignment ;
 assignment     → IDENTIFIER "=" assignment ;
                | comma ;
 
-comma          → ternary ( "," ternary )* ;
+comma          → logic_or ( "," logic_or )* ;
+
+logic_or       → logic_and ( "or" logic_and )* ;
+
+logic_and      → ternary  ( "and" ternary )* ;
 
 ternary        → equality ( "?" expression  ":" ternary )? ;
 

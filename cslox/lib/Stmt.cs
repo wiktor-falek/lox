@@ -15,10 +15,11 @@ abstract public class Stmt
   abstract public void Accept(IStmtVisitor visitor);
 }
 
-public class IfStmt(Expr condition, Stmt thenBranch, Stmt? elseBranch) : Stmt
+public class IfStmt(Expr condition, Stmt thenBranch, List<IfStmt> elseIfStatements, Stmt? elseBranch) : Stmt
 {
   public readonly Expr Condition = condition;
   public readonly Stmt ThenBranch = thenBranch;
+  public readonly List<IfStmt> ElseIfStatements = elseIfStatements;
   public readonly Stmt? ElseBranch = elseBranch;
 
   override public void Accept(IStmtVisitor visitor)

@@ -39,6 +39,11 @@ class AstPrinter : IExprVisitor<R>
     }
   }
 
+  R IExprVisitor<R>.VisitLogicalExpr(LogicalExpr expr)
+  {
+    throw new NotImplementedException();
+  }
+
   R IExprVisitor<R>.VisitUnaryExpr(UnaryExpr expr)
   {
     return Parenthesize(expr.Op.Lexeme, expr.Right);

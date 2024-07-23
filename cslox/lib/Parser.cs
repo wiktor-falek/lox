@@ -206,11 +206,29 @@ public class Parser(List<Token> tokens)
     Consume(LEFT_PAREN, "Expect '(' after 'if'.");
     Expr condition = Expression();
     Consume(RIGHT_PAREN, "Expect ')' after if condition.");
+    Stmt thenBranch = Statement();
 
-    Stmt thenCondition = Statement();
-    Stmt? elseCondition = Match(ELSE) ? Statement() : null;
+    List<IfStmt> elseIfStatements = [];
+    Stmt? elseBranch = null;
 
-    return new IfStmt(condition, thenCondition, elseCondition);
+    while (Match(ELSE))
+    {
+      if (Match(IF))
+      {
+        Consume(LEFT_PAREN, "Expect '(' after 'else if'.");
+        Expr elseIfCondition = Expression();
+        Consume(RIGHT_PAREN, "Expect ')' after 'else if' condition.");
+        IfStmt elseIfStatement = new(elseIfCondition, Statement(), [], null);
+        elseIfStatements.Add(elseIfStatement);
+      }
+      else
+      {
+        elseBranch = Statement();
+        break;
+      }
+    }
+
+    return new IfStmt(condition, thenBranch, elseIfStatements, elseBranch);
   }
 
   private Stmt ForStatement()
@@ -300,19 +318,47 @@ public class Parser(List<Token> tokens)
 
   private Expr Comma()
   {
-    Expr expr = Ternary();
+    Expr expr = Or();
 
     List<Expr> expressions = [expr];
 
     while (Match(COMMA))
     {
-      Expr nextExpr = Ternary();
+      Expr nextExpr = Or();
       expressions.Add(nextExpr);
     }
 
     if (expressions.Count > 1)
     {
       return new CommaExpr(expressions);
+    }
+
+    return expr;
+  }
+
+  private Expr Or()
+  {
+    Expr expr = And();
+
+    if (Match(OR))
+    {
+      Token op = Previous();
+      Expr right = And();
+      expr = new LogicalExpr(expr, op, right);
+    }
+
+    return expr;
+  }
+
+  private Expr And()
+  {
+    Expr expr = Ternary();
+
+    if (Match(AND))
+    {
+      Token op = Previous();
+      Expr right = Ternary();
+      expr = new LogicalExpr(expr, op, right);
     }
 
     return expr;

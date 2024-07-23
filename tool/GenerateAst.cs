@@ -15,6 +15,7 @@ class GenerateAst
       "BinaryExpr   : Expr left, Token op, Expr right",
       "GroupingExpr : Expr expression",
       "LiteralExpr  : object? value",
+      "LogicalExpr  : Expr left, Token op, Expr right",
       "UnaryExpr    : Token op, Expr right",
       "TernaryExpr  : Expr condition, Expr trueExpr, Expr falseExpr",
       "CommaExpr    : List<Expr> expressions",
@@ -24,7 +25,7 @@ class GenerateAst
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [
-      "IfStmt       : Expr condition, Stmt thenBranch, Stmt? elseBranch",
+      "IfStmt       : Expr condition, Stmt thenBranch, List<IfStmt> elseIfStatements, Stmt? elseBranch",
       "BlockStmt    : List<Stmt> statements",
       "ExprStmt     : Expr expression",
       "VarStmt      : Token name, Expr? initializer",
