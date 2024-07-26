@@ -3,10 +3,10 @@
 class Lox
 {
   private readonly static Interpreter Interpreter = new();
-  static bool HadError = false;
-  static bool HadRuntimeError = false;
+  public static bool HadError = false;
+  public static bool HadRuntimeError = false;
 
-  static void Main(string[] args)
+  public static void Main(string[] args)
   {
     if (args.Length > 1)
     {
@@ -24,7 +24,7 @@ class Lox
     Environment.Exit(0);
   }
 
-  static void Run(string source)
+  public static void Run(string source)
   {
     Scanner scanner = new(source);
     List<Token> tokens = scanner.ScanTokens();
@@ -44,7 +44,7 @@ class Lox
     Interpreter.Interpret(statements);
   }
 
-  static void RunFile(string fileName)
+  public static void RunFile(string fileName)
   {
     try
     {
@@ -60,7 +60,7 @@ class Lox
     }
   }
 
-  static void RunPrompt()
+  public static void RunPrompt()
   {
     while (true)
     {
@@ -103,7 +103,7 @@ class Lox
     HadRuntimeError = true;
   }
 
-  static void Report(int line, string where, string message)
+  public static void Report(int line, string where, string message)
   {
     Console.Error.WriteLine($"[line {line}] Error {where}: {message}");
     HadError = true;

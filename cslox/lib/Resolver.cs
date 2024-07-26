@@ -4,6 +4,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 {
   private readonly Interpreter Interpreter = interpreter;
   private readonly Stack<Dictionary<string, bool>> Scopes = [];
+  private FunctionType CurrentFunction = FunctionType.NONE;
 
   public void Resolve(List<Stmt> statements)
   {
@@ -65,8 +66,11 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     }
   }
 
-  private void ResolveFunction(FunctionStmt function)
+  private void ResolveFunction(FunctionStmt function, FunctionType type)
   {
+    FunctionType enclosingFunction = CurrentFunction;
+    CurrentFunction = type;
+
     BeginScope();
     foreach (Token parameter in function.Parameters)
     {
@@ -75,6 +79,8 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     }
     Resolve(function.Body);
     EndScope();
+
+    CurrentFunction = enclosingFunction;
   }
 
   private void ResolveFunction(LambdaExpr lambda)
@@ -194,7 +200,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     Declare(stmt.Name);
     Define(stmt.Name);
-    ResolveFunction(stmt);
+    ResolveFunction(stmt, FunctionType.FUNCTION);
   }
 
   public void VisitIfStmt(IfStmt stmt)
@@ -215,6 +221,11 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
   public void VisitReturnStmt(ReturnStmt stmt)
   {
+    if (CurrentFunction is FunctionType.NONE)
+    {
+      Lox.Error(stmt.Keyword, "Can't return from top-level code.");
+    }
+
     if (stmt.Value is not null)
     {
       Resolve(stmt.Value);
@@ -235,5 +246,11 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     Resolve(stmt.Condition);
     Resolve(stmt.Body);
+  }
+
+  private enum FunctionType
+  {
+    NONE,
+    FUNCTION,
   }
 }
