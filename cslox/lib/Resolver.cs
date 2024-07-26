@@ -5,6 +5,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   private readonly Interpreter Interpreter = interpreter;
   private readonly Stack<Dictionary<string, bool>> Scopes = [];
   private FunctionType CurrentFunction = FunctionType.NONE;
+  private bool IsInLoop = false;
 
   public void Resolve(List<Stmt> statements)
   {
@@ -189,7 +190,13 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     EndScope();
   }
 
-  public void VisitBreakStmt(BreakStmt stmt) { }
+  public void VisitBreakStmt(BreakStmt stmt)
+  {
+    if (!IsInLoop)
+    {
+      Lox.Error(stmt.Keyword, "Can't break outside of a loop.");
+    }
+  }
 
   public void VisitExprStmt(ExprStmt stmt)
   {
@@ -244,8 +251,13 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
   public void VisitWhileStmt(WhileStmt stmt)
   {
+    bool previousLoopState = IsInLoop;
+    IsInLoop = true;
+
     Resolve(stmt.Condition);
     Resolve(stmt.Body);
+
+    IsInLoop = previousLoopState;
   }
 
   private enum FunctionType

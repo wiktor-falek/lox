@@ -180,8 +180,9 @@ public class Parser(List<Token> tokens)
 
   private BreakStmt BreakStatement()
   {
+    Token keyword = Previous();
     Consume(SEMICOLON, "Expect ';' after break.");
-    return new BreakStmt(Previous());
+    return new BreakStmt(keyword);
   }
 
   private List<Stmt> Block()
