@@ -30,7 +30,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Globals.Define("exit", new ExitNativeFunction());
   }
 
-  public void Resolve(Expr expression, int amogus)
+  public void Resolve(Expr expression, int depth)
   {
     throw new NotImplementedException();
   }
@@ -85,7 +85,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitWhileStmt(WhileStmt stmt)
   {
-    while (IsTruthy(Evaluate(stmt.Expression)))
+    while (IsTruthy(Evaluate(stmt.Condition)))
     {
       try
       {

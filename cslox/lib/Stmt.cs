@@ -59,9 +59,9 @@ public class VarStmt(Token name, Expr? initializer) : Stmt
   }
 }
 
-public class WhileStmt(Expr expression, Stmt body) : Stmt
+public class WhileStmt(Expr condition, Stmt body) : Stmt
 {
-  public readonly Expr Expression = expression;
+  public readonly Expr Condition = condition;
   public readonly Stmt Body = body;
 
   override public void Accept(IStmtVisitor visitor)

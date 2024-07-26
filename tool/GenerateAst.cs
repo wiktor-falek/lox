@@ -29,7 +29,7 @@ class GenerateAst
       "BlockStmt    : List<Stmt> statements",
       "ExprStmt     : Expr expression",
       "VarStmt      : Token name, Expr? initializer",
-      "WhileStmt    : Expr expression, Stmt body",
+      "WhileStmt    : Expr condition, Stmt body",
       "BreakStmt    : Token keyword",
       "FunctionStmt : Token name, List<Token> parameters, List<Stmt> body",
       "ReturnStmt   : Token keyword, Expr? value",

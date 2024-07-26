@@ -32,6 +32,9 @@ class Lox
     Parser parser = new(tokens);
     List<Stmt> statements = parser.Parse();
 
+    // Stop if there was a syntax error.
+    if (HadError) return;
+
     Interpreter.Interpret(statements);
   }
 
