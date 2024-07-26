@@ -35,11 +35,11 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
   private void ResolveLocal(Expr expr, Token name)
   {
-    for (int i = Scopes.Count; i >= 0; i--)
+    for (int i = Scopes.Count - 1; i >= 0; i--)
     {
       if (Scopes.ElementAt(i).ContainsKey(name.Lexeme))
       {
-        Interpreter.Resolve(expr, Scopes.Count - 1 - i);
+        Interpreter.Resolve(expr, i);
         return;
       }
     }
@@ -49,7 +49,10 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     if (Scopes.TryPeek(out var scope))
     {
-      scope.Add(name.Lexeme, false);
+      if (!scope.TryAdd(name.Lexeme, false))
+      {
+        Lox.Error(name, "Already a variable with this name in this scope.");
+      }
     }
   }
 

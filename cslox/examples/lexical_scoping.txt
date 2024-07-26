@@ -1,0 +1,19 @@
+var a = "global";
+{
+  fun showA() {
+    // a -> "global"
+    print(a);
+  }
+
+  showA();
+  var a = "block";
+  showA();
+}
+
+// before - dynamic scoping
+// "global"
+// "block
+
+// after - lexical (static) scoping
+// "global"
+// "global"

@@ -35,6 +35,12 @@ class Lox
     // Stop if there was a syntax error.
     if (HadError) return;
 
+    Resolver resolver = new(Interpreter);
+    resolver.Resolve(statements);
+
+    // Stop if there was a resolution error.
+    if (HadError) return;
+
     Interpreter.Interpret(statements);
   }
 

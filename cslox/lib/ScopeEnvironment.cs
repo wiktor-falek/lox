@@ -18,6 +18,22 @@ public class ScopeEnvironment(ScopeEnvironment? enclosing = null)
     throw new RuntimeError(name, $"Undefined variable '{name.Lexeme}'.");
   }
 
+  private ScopeEnvironment Ancestor(int distance)
+  {
+    ScopeEnvironment environment = this;
+    for (int i = 0; i < distance; i++)
+    {
+      environment = environment.Enclosing!;
+    }
+
+    return environment;
+  }
+
+  public object? GetAt(int distance, string name)
+  {
+    return Ancestor(distance).Values[name];
+  }
+
   public void Define(string name, object? value)
   {
     Values[name] = value;
@@ -38,5 +54,12 @@ public class ScopeEnvironment(ScopeEnvironment? enclosing = null)
     }
 
     throw new RuntimeError(name, $"Undefined variable '{name.Lexeme}'.");
+  }
+
+  public void AssignAt(int distance, Token name, object? value)
+  {
+    ScopeEnvironment ancestor = Ancestor(distance);
+    ancestor.Values.Remove(name.Lexeme);
+    ancestor.Values.Add(name.Lexeme, value);
   }
 }

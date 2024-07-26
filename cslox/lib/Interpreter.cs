@@ -16,6 +16,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
   public readonly ScopeEnvironment Globals;
   public ScopeEnvironment Environment;
+  private readonly Dictionary<Expr, int> Locals = [];
   public Option<object?> LastExpressionValue = Option<object?>.None();
 
   public Interpreter()
@@ -32,7 +33,19 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   public void Resolve(Expr expression, int depth)
   {
-    throw new NotImplementedException();
+    Locals.Add(expression, depth);
+  }
+
+  public object? LookUpVariable(Token name, Expr expr)
+  {
+    if (Locals.TryGetValue(expr, out var distance))
+    {
+      return Environment.GetAt(distance, name.Lexeme);
+    }
+    else
+    {
+      return Globals.Get(name);
+    }
   }
 
   public void Interpret(List<Stmt> statements)
@@ -159,7 +172,16 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   object? IExprVisitor<object?>.VisitAssignExpr(AssignExpr expr)
   {
     object? value = Evaluate(expr.Value);
-    Environment.Assign(expr.Name, value);
+
+    if (Locals.TryGetValue(expr, out var distance))
+    {
+      Environment.AssignAt(distance, expr.Name, value);
+    }
+    else
+    {
+      Globals.Assign(expr.Name, value);
+    }
+
     return value;
   }
 
@@ -284,7 +306,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   object? IExprVisitor<object?>.VisitVariableExpr(VariableExpr expr)
   {
-    return Environment.Get(expr.Name);
+    return LookUpVariable(expr.Name, expr);
   }
 
   object? IExprVisitor<object?>.VisitCallExpr(CallExpr expr)
