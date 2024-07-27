@@ -108,4 +108,9 @@ class Lox
     Console.Error.WriteLine($"[line {line}] Error {where}: {message}");
     HadError = true;
   }
+
+  public static void Warn(int line, string message)
+  {
+    Console.Error.WriteLine($"[line {line}] Warning: {message}");
+  }
 }

@@ -1,17 +1,24 @@
-public struct Void { };
+public struct Void { }
 
 class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 {
   private readonly Interpreter Interpreter = interpreter;
-  private readonly Stack<Dictionary<string, bool>> Scopes = [];
+  private readonly Stack<Dictionary<string, Variable>> Scopes = [];
   private FunctionType CurrentFunction = FunctionType.NONE;
   private bool IsInLoop = false;
+  private readonly List<(int line, string message)> UnusedVariableWarnings = [];
 
   public void Resolve(List<Stmt> statements)
   {
     foreach (Stmt statement in statements)
     {
       Resolve(statement);
+    }
+
+    var sortedWarnings = UnusedVariableWarnings.OrderBy(e => e.line);
+    foreach (var (line, message) in sortedWarnings)
+    {
+      Lox.Warn(line, message);
     }
   }
 
@@ -32,16 +39,31 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
   private void EndScope()
   {
-    Scopes.Pop();
+    var scope = Scopes.Pop();
+
+    foreach (var (_, variable) in scope)
+    {
+      if (variable.State == VariableState.DEFINED)
+      {
+        UnusedVariableWarnings.Add((variable.Name.Line, $"Unused local variable '{variable.Name.Lexeme}'."));
+      }
+    }
   }
 
-  private void ResolveLocal(Expr expr, Token name)
+  private void ResolveLocal(Expr expr, Token name, bool isRead)
   {
     for (int i = Scopes.Count - 1; i >= 0; i--)
     {
-      if (Scopes.ElementAt(i).ContainsKey(name.Lexeme))
+      var scope = Scopes.ElementAt(i);
+      if (scope.TryGetValue(name.Lexeme, out Variable value))
       {
         Interpreter.Resolve(expr, i);
+
+        if (isRead)
+        {
+          scope.Remove(name.Lexeme);
+          scope.Add(name.Lexeme, new Variable(value.Name, VariableState.READ));
+        }
         return;
       }
     }
@@ -51,7 +73,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     if (Scopes.TryPeek(out var scope))
     {
-      if (!scope.TryAdd(name.Lexeme, false))
+      if (!scope.TryAdd(name.Lexeme, new Variable(name, VariableState.DECLARED)))
       {
         Lox.Error(name, "Already a variable with this name in this scope.");
       }
@@ -63,7 +85,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     if (Scopes.TryPeek(out var scope))
     {
       scope.Remove(name.Lexeme);
-      scope.Add(name.Lexeme, true);
+      scope.Add(name.Lexeme, new Variable(name, VariableState.DEFINED));
     }
   }
 
@@ -78,7 +100,10 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
       Declare(parameter);
       Define(parameter);
     }
-    Resolve(function.Body);
+    foreach (var statement in function.Body)
+    {
+      Resolve(statement);
+    }
     EndScope();
 
     CurrentFunction = enclosingFunction;
@@ -86,20 +111,28 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
   private void ResolveFunction(LambdaExpr lambda)
   {
+    FunctionType enclosingFunction = CurrentFunction;
+    CurrentFunction = FunctionType.FUNCTION;
+
     BeginScope();
     foreach (Token parameter in lambda.Parameters)
     {
       Declare(parameter);
       Define(parameter);
     }
-    Resolve(lambda.Body);
+    foreach (var statement in lambda.Body)
+    {
+      Resolve(statement);
+    }
     EndScope();
+
+    CurrentFunction = enclosingFunction;
   }
 
   public Void VisitAssignExpr(AssignExpr expr)
   {
     Resolve(expr.Value);
-    ResolveLocal(expr, expr.Name);
+    ResolveLocal(expr, expr.Name, false);
     return default;
   }
 
@@ -174,19 +207,22 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     if (Scopes.TryPeek(out var scope)
         && scope.TryGetValue(expr.Name.Lexeme, out var variable)
-        && variable == false)
+        && variable.State == VariableState.DECLARED)
     {
       Lox.Error(expr.Name, "Can't read local variable in its own initializer.");
     }
 
-    ResolveLocal(expr, expr.Name);
+    ResolveLocal(expr, expr.Name, true);
     return default;
   }
 
   public void VisitBlockStmt(BlockStmt stmt)
   {
     BeginScope();
-    Resolve(stmt.Statements);
+    foreach (var statement in stmt.Statements)
+    {
+      Resolve(statement);
+    }
     EndScope();
   }
 
@@ -258,6 +294,19 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     Resolve(stmt.Body);
 
     IsInLoop = previousLoopState;
+  }
+
+  private struct Variable(Token name, VariableState state)
+  {
+    public Token Name = name;
+    public VariableState State = state;
+  }
+
+  private enum VariableState
+  {
+    DECLARED,
+    DEFINED,
+    READ
   }
 
   private enum FunctionType
