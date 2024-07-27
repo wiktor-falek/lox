@@ -2,38 +2,53 @@ using static TokenType;
 
 public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 {
-  public readonly ScopeEnvironment Globals;
-  public ScopeEnvironment Environment;
-  private readonly Dictionary<Expr, int> Locals = [];
+  private readonly Dictionary<string, object?> Globals = [];
+  public readonly ScopeEnvironment Global; // alternative to nullable, never written to or read from
+  private ScopeEnvironment Environment;
+  private readonly Dictionary<Expr, (int distance, int slot)> Locals = [];
   public Option<object?> LastExpressionValue = Option<object?>.None();
 
   public Interpreter()
   {
-    Globals = Environment = new ScopeEnvironment();
-
-    Globals.Define("print", new PrintNativeFunction());
-    Globals.Define("input", new InputNativeFunction());
-    Globals.Define("clock", new ClockNativeFunction());
-    Globals.Define("int", new IntNativeFunction());
-    Globals.Define("rand", new RandNativeFunction());
-    Globals.Define("exit", new ExitNativeFunction());
+    Environment = Global = new();
+    Globals.Add("print", new PrintNativeFunction());
+    Globals.Add("input", new InputNativeFunction());
+    Globals.Add("clock", new ClockNativeFunction());
+    Globals.Add("int", new IntNativeFunction());
+    Globals.Add("rand", new RandNativeFunction());
+    Globals.Add("exit", new ExitNativeFunction());
   }
 
-  public void Resolve(Expr expression, int depth)
+  public void Define(Token name, object? value)
   {
-    Locals.Add(expression, depth);
+    if (Environment.Equals(Global))
+    {
+      Globals.Add(name.Lexeme, value);
+    }
+    else
+    {
+      Environment.Define(value);
+    }
+  }
+
+  public void Resolve(Expr expression, int distance, int slot)
+  {
+    Locals.Add(expression, (distance, slot));
   }
 
   public object? LookUpVariable(Token name, Expr expr)
   {
-    if (Locals.TryGetValue(expr, out var distance))
+    if (Locals.TryGetValue(expr, out var local))
     {
-      return Environment.GetAt(distance, name.Lexeme);
+      return Environment.GetAt(local.distance, local.slot);
     }
-    else
+
+    if (Globals.TryGetValue(name.Lexeme, out var value))
     {
-      return Globals.Get(name);
+      return value;
     }
+
+    throw new RuntimeError(name, $"Undefined variable '{name.Lexeme}'.");
   }
 
   public void Interpret(List<Stmt> statements)
@@ -118,7 +133,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   void IStmtVisitor.VisitFunctionStmt(FunctionStmt stmt)
   {
     LoxFunction function = new(stmt, Environment);
-    Environment.Define(stmt.Name.Lexeme, function);
+    Define(stmt.Name, function);
   }
 
   void IStmtVisitor.VisitVarStmt(VarStmt stmt)
@@ -130,7 +145,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
       value = Evaluate(stmt.Initializer);
     }
 
-    Environment.Define(stmt.Name.Lexeme, value);
+    Define(stmt.Name, value);
   }
 
   void IStmtVisitor.VisitBlockStmt(BlockStmt stmt)
@@ -161,13 +176,15 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     object? value = Evaluate(expr.Value);
 
-    if (Locals.TryGetValue(expr, out var distance))
+    if (Locals.TryGetValue(expr, out var local))
     {
-      Environment.AssignAt(distance, expr.Name, value);
+      var (distance, slot) = local;
+      Environment.AssignAt(distance, slot, value);
     }
     else
     {
-      Globals.Assign(expr.Name, value);
+      Globals.Remove(expr.Name.Lexeme);
+      Globals.Add(expr.Name.Lexeme, value);
     }
 
     return value;

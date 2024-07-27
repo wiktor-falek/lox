@@ -57,12 +57,13 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
       var scope = Scopes.ElementAt(i);
       if (scope.TryGetValue(name.Lexeme, out Variable value))
       {
-        Interpreter.Resolve(expr, i);
+        int slot = scope[name.Lexeme].Slot;
+        Interpreter.Resolve(expr, distance: i, slot);
 
         if (isRead)
         {
           scope.Remove(name.Lexeme);
-          scope.Add(name.Lexeme, new Variable(value.Name, VariableState.READ));
+          scope.Add(name.Lexeme, new Variable(value.Name, slot, VariableState.READ));
         }
         return;
       }
@@ -73,7 +74,8 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     if (Scopes.TryPeek(out var scope))
     {
-      if (!scope.TryAdd(name.Lexeme, new Variable(name, VariableState.DECLARED)))
+      int slot = scope.Count;
+      if (!scope.TryAdd(name.Lexeme, new Variable(name, slot, VariableState.DECLARED)))
       {
         Lox.Error(name, "Already a variable with this name in this scope.");
       }
@@ -84,8 +86,9 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     if (Scopes.TryPeek(out var scope))
     {
+      int slot = scope[name.Lexeme].Slot;
       scope.Remove(name.Lexeme);
-      scope.Add(name.Lexeme, new Variable(name, VariableState.DEFINED));
+      scope.Add(name.Lexeme, new Variable(name, slot, VariableState.DEFINED));
     }
   }
 
@@ -296,9 +299,10 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     IsInLoop = previousLoopState;
   }
 
-  private struct Variable(Token name, VariableState state)
+  private struct Variable(Token name, int slot, VariableState state)
   {
-    public Token Name = name;
+    public readonly Token Name = name;
+    public readonly int Slot = slot;
     public VariableState State = state;
   }
 

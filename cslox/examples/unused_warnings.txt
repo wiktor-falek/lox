@@ -1,0 +1,19 @@
+fun main() {
+  var declared;
+
+  var definedInitialized = 1;
+
+  var definedLateInitialized;
+  definedLateInitialized = 2;
+
+  var used;
+  used;
+
+  fun usedFunction(usedParam, unusedParam) {
+    return usedParam;
+  }
+
+  usedFunction(1, 2);
+
+  fun unusedFunction() {}
+}

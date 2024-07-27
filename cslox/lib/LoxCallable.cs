@@ -23,7 +23,7 @@ public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure) : L
 
     for (int i = 0; i < Declaration.Parameters.Count; i++)
     {
-      environment.Define(Declaration.Parameters[i].Lexeme, arguments[i]);
+      environment.Define(arguments[i]);
     }
 
     try
@@ -52,7 +52,7 @@ public class LoxLambdaFunction(LambdaExpr declaration, ScopeEnvironment closure)
 
     for (int i = 0; i < Declaration.Parameters.Count; i++)
     {
-      environment.Define(Declaration.Parameters[i].Lexeme, arguments[i]);
+      environment.Define(arguments[i]);
     }
 
     try
