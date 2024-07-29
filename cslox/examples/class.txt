@@ -1,0 +1,15 @@
+class Dog {
+  woof() {
+    print("woof");
+  }
+}
+
+print(Dog);
+
+var doggy = Dog();
+print(doggy);
+
+doggy.name = "Abby";
+print(doggy.name);
+
+print(doggy.age);

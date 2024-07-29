@@ -9,7 +9,7 @@ public abstract class LoxNativeFunction : LoxCallable
 public class PrintNativeFunction : LoxNativeFunction
 {
   public override int Arity => 1;
-  protected override string Name => "print";
+  public override string Name => "print";
 
   public override object? Call(Interpreter interpreter, List<object?> arguments)
   {
@@ -21,7 +21,7 @@ public class PrintNativeFunction : LoxNativeFunction
 public class InputNativeFunction : LoxNativeFunction
 {
   public override int Arity => 0;
-  protected override string Name => "input";
+  public override string Name => "input";
 
   public override object? Call(Interpreter interpreter, List<object?> arguments)
   {
@@ -31,7 +31,7 @@ public class InputNativeFunction : LoxNativeFunction
 
 public class ClockNativeFunction : LoxNativeFunction
 {
-  protected override string Name => "clock";
+  public override string Name => "clock";
   public override int Arity => 0;
 
   public override object? Call(Interpreter interpreter, List<object?> arguments)
@@ -43,7 +43,7 @@ public class ClockNativeFunction : LoxNativeFunction
 public class IntNativeFunction : LoxNativeFunction
 {
   public override int Arity => 1;
-  protected override string Name => "int";
+  public override string Name => "int";
 
   public override object? Call(Interpreter interpreter, List<object?> arguments)
   {
@@ -59,7 +59,7 @@ public class IntNativeFunction : LoxNativeFunction
 public class RandNativeFunction : LoxNativeFunction
 {
   public override int Arity => 0;
-  protected override string Name => "rand";
+  public override string Name => "rand";
 
   public override object? Call(Interpreter interpreter, List<object?> arguments)
   {
@@ -70,7 +70,7 @@ public class RandNativeFunction : LoxNativeFunction
 public class ExitNativeFunction : LoxNativeFunction
 {
   public override int Arity => 1;
-  protected override string Name => "exit";
+  public override string Name => "exit";
 
   public override object? Call(Interpreter interpreter, List<object?> arguments)
   {

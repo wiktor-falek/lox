@@ -44,9 +44,12 @@ block          → "{" declaration* "}" ;
 
 
 # EXPRESSIONS
+
 expression     → assignment ;
 
-assignment     → IDENTIFIER "=" assignment ;
+lambda         → "fun" "(" parameters? ")" block ;
+
+assignment     → ( call "." )? IDENTIFIER "=" assignment ;
                | comma ;
 
 comma          → logic_or ( "," logic_or )* ;
@@ -68,12 +71,10 @@ factor         → unary ( ( "/" | "*" ) unary )* ;
 unary          → ( "!" | "-" ) unary
                | call ;
 
-call           → primary ( "(" comma? ")" )* ;
+call           → primary ( "(" comma? ")" | "." IDENTIFIER )* ;
                
 primary        → "true" | "false" | "nil"
                | NUMBER | STRING
                | "(" expression ")"
                | IDENTIFIER 
                | lambda ;
-
-lambda         → "fun" "(" parameters? ")" block ;

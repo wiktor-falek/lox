@@ -21,6 +21,8 @@ class GenerateAst
       "CommaExpr    : List<Expr> expressions",
       "VariableExpr : Token name",
       "CallExpr     : Expr callee, Token paren, List<Expr> arguments",
+      "GetExpr      : Expr obj, Token name",
+      "SetExpr      : Expr obj, Token name, Expr value",
       "LambdaExpr   : List<Token> parameters, List<Stmt> body",
     ]);
 

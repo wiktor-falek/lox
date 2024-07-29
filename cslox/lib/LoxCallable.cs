@@ -1,6 +1,6 @@
 public abstract class LoxCallable
 {
-  protected abstract string Name { get; }
+  public abstract string Name { get; }
   public abstract int Arity { get; }
   public abstract object? Call(Interpreter interpreter, List<object?> arguments);
 
@@ -12,7 +12,7 @@ public abstract class LoxCallable
 
 public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure) : LoxCallable
 {
-  protected override string Name => Declaration.Name.Lexeme;
+  public override string Name => Declaration.Name.Lexeme;
   public override int Arity => Declaration.Parameters.Count;
   private readonly FunctionStmt Declaration = declaration;
   private readonly ScopeEnvironment Closure = closure;
@@ -41,7 +41,7 @@ public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure) : L
 
 public class LoxLambdaFunction(LambdaExpr declaration, ScopeEnvironment closure) : LoxCallable
 {
-  protected override string Name => "(anonymous)";
+  public override string Name => "(anonymous)";
   public override int Arity => Declaration.Parameters.Count;
   private readonly LambdaExpr Declaration = declaration;
   private readonly ScopeEnvironment Closure = closure;

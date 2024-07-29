@@ -136,6 +136,12 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Define(stmt.Name, function);
   }
 
+  void IStmtVisitor.VisitClassStmt(ClassStmt stmt)
+  {
+    LoxClass @class = new(stmt.Name.Lexeme);
+    Define(stmt.Name, @class);
+  }
+
   void IStmtVisitor.VisitVarStmt(VarStmt stmt)
   {
     object? value = null;
@@ -338,6 +344,32 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     }
 
     return function.Call(this, arguments);
+  }
+
+  object? IExprVisitor<object?>.VisitGetExpr(GetExpr expr)
+  {
+    object? obj = Evaluate(expr.Obj);
+
+    if (obj is LoxInstance instance)
+    {
+      return instance.Get(expr.Name);
+    }
+
+    throw new RuntimeError(expr.Name, "Only instances have properties.");
+  }
+
+  object? IExprVisitor<object?>.VisitSetExpr(SetExpr expr)
+  {
+    object? obj = Evaluate(expr.Obj);
+
+    if (obj is LoxInstance instance)
+    {
+      object? value = Evaluate(expr.Value);
+      instance.Set(expr.Name, value);
+      return value;
+    }
+
+    throw new RuntimeError(expr.Name, "Only instances have fields.");
   }
 
   object? IExprVisitor<object?>.VisitLambdaExpr(LambdaExpr expr)

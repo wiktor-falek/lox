@@ -219,6 +219,19 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     return default;
   }
 
+  public Void VisitGetExpr(GetExpr expr)
+  {
+    Resolve(expr.Obj);
+    return default;
+  }
+
+  public Void VisitSetExpr(SetExpr expr)
+  {
+    Resolve(expr.Value);
+    Resolve(expr.Obj);
+    return default;
+  }
+
   public void VisitBlockStmt(BlockStmt stmt)
   {
     BeginScope();
@@ -242,11 +255,18 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     Resolve(stmt.Expression);
   }
 
+
   public void VisitFunctionStmt(FunctionStmt stmt)
   {
     Declare(stmt.Name);
     Define(stmt.Name);
     ResolveFunction(stmt, FunctionType.FUNCTION);
+  }
+
+  public void VisitClassStmt(ClassStmt stmt)
+  {
+    Declare(stmt.Name);
+    Define(stmt.Name);
   }
 
   public void VisitIfStmt(IfStmt stmt)

@@ -327,6 +327,10 @@ public class Parser(List<Token> tokens)
         Token name = variableExpr.Name;
         return new AssignExpr(name, value);
       }
+      else if (expr is GetExpr get)
+      {
+        return new SetExpr(get.Obj, get.Name, value);
+      }
 
       Error(equals, "Invalid assignment target.");
     }
@@ -477,6 +481,11 @@ public class Parser(List<Token> tokens)
       if (Match(LEFT_PAREN))
       {
         expr = FinishCall(expr);
+      }
+      else if (Match(DOT))
+      {
+        Token name = Consume(IDENTIFIER, "Expect property name after '.'.");
+        expr = new GetExpr(expr, name);
       }
       else
       {
