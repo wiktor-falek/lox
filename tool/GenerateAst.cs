@@ -32,6 +32,7 @@ class GenerateAst
       "WhileStmt    : Expr condition, Stmt body",
       "BreakStmt    : Token keyword",
       "FunctionStmt : Token name, List<Token> parameters, List<Stmt> body",
+      "ClassStmt    : Token name, List<FunctionStmt> methods",
       "ReturnStmt   : Token keyword, Expr? value",
     ]);
   }

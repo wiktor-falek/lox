@@ -103,6 +103,7 @@ public class Parser(List<Token> tokens)
   {
     try
     {
+      if (Match(CLASS)) return ClassDeclaration();
       if (Match(FUN))
       {
         if (!Check(IDENTIFIER))
@@ -120,6 +121,22 @@ public class Parser(List<Token> tokens)
       Synchronize();
       return null;
     }
+  }
+
+  private ClassStmt ClassDeclaration()
+  {
+    Token name = Consume(IDENTIFIER, "Expect class name.");
+    Consume(LEFT_BRACE, "Expect '{' before class body.");
+
+    List<FunctionStmt> methods = [];
+    while (!Check(RIGHT_BRACE) && !IsAtEnd())
+    {
+      methods.Add(Function("method"));
+    }
+
+    Consume(RIGHT_BRACE, "Expect '}' after class body.");
+
+    return new ClassStmt(name, methods);
   }
 
   private FunctionStmt Function(string kind)
