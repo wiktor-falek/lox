@@ -232,6 +232,12 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     return default;
   }
 
+  public Void VisitThisExpr(ThisExpr expr)
+  {
+    ResolveLocal(expr, expr.Keyword, true);
+    return default;
+  }
+
   public void VisitBlockStmt(BlockStmt stmt)
   {
     BeginScope();
@@ -268,10 +274,18 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     Declare(stmt.Name);
     Define(stmt.Name);
 
+    BeginScope();
+
+    Token keyword = new(TokenType.THIS, "this", null, stmt.Name.Line + 1);
+    Dictionary<string, Variable> scope = Scopes.Peek();
+    scope.Add("this", new Variable(keyword, scope.Count, VariableState.DEFINED));
+
     foreach (var method in stmt.Methods)
     {
       ResolveFunction(method, FunctionType.METHOD);
     }
+
+    EndScope();
   }
 
   public void VisitIfStmt(IfStmt stmt)

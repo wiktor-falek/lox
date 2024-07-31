@@ -13,6 +13,7 @@ public interface IExprVisitor<R>
   R VisitGetExpr(GetExpr expr);
   R VisitSetExpr(SetExpr expr);
   R VisitLambdaExpr(LambdaExpr expr);
+  R VisitThisExpr(ThisExpr expr);
 }
 
 abstract public class Expr
@@ -161,5 +162,15 @@ public class LambdaExpr(List<Token> parameters, List<Stmt> body) : Expr
   override public R Accept<R>(IExprVisitor<R> visitor)
   {
     return visitor.VisitLambdaExpr(this);
+  }
+}
+
+public class ThisExpr(Token keyword) : Expr
+{
+  public readonly Token Keyword = keyword;
+
+  override public R Accept<R>(IExprVisitor<R> visitor)
+  {
+    return visitor.VisitThisExpr(this);
   }
 }

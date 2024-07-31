@@ -1,4 +1,4 @@
-class LoxInstance(LoxClass @class)
+public class LoxInstance(LoxClass @class)
 {
   private readonly LoxClass @Class = @class;
   private readonly Dictionary<string, object?> fields = [];
@@ -11,7 +11,7 @@ class LoxInstance(LoxClass @class)
     }
 
     LoxFunction? method = @Class.FindMethod(name.Lexeme);
-    if (method is not null) return method;
+    if (method is not null) return method.Bind(this);
 
     throw new RuntimeError(name, $"Undefined property '{name.Lexeme}'.");
   }

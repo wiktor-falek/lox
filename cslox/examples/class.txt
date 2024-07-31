@@ -1,17 +1,27 @@
-class Dog {
-  woof() {
-    print("woof");
+/*
+class Cake {
+  test() {
+    print(this);
+  }
+
+  taste() {
+    var adjective = "delicious";
+    print("The " + this.flavor + " cake is " + adjective + "!");
   }
 }
 
-print(Dog);
+var cake = Cake();
+cake.flavor = "German chocolate";
+cake.taste();
+*/
 
-var doggy = Dog();
-print(doggy); 
+class Foo {
+  get_self() {
+    return this;
+  }
+}
 
-doggy.name = "Abby";
-print(doggy.name);
-
-doggy.woof();
-
-print(doggy.age); // Undefined property
+var foo = Foo();
+print(foo.get_self());
+var get_self = foo.get_self;
+print(get_self()); // bound methods

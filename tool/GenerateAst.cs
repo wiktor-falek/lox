@@ -24,6 +24,7 @@ class GenerateAst
       "GetExpr      : Expr obj, Token name",
       "SetExpr      : Expr obj, Token name, Expr value",
       "LambdaExpr   : List<Token> parameters, List<Stmt> body",
+      "ThisExpr     : Token keyword",
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [

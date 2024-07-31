@@ -1,5 +1,4 @@
-
-class LoxClass(string name, Dictionary<string, LoxFunction> methods) : LoxCallable
+public class LoxClass(string name, Dictionary<string, LoxFunction> methods) : LoxCallable
 {
   public override string Name => name;
   public override int Arity => 0;

@@ -533,6 +533,8 @@ public class Parser(List<Token> tokens)
       return new LiteralExpr(Previous().Literal);
     }
 
+    if (Match(THIS)) return new ThisExpr(Previous());
+
     if (Match(LEFT_PAREN))
     {
       Expr expr = Expression();

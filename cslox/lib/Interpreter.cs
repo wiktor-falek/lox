@@ -379,6 +379,11 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     throw new RuntimeError(expr.Name, "Only instances have fields.");
   }
 
+  object? IExprVisitor<object?>.VisitThisExpr(ThisExpr expr)
+  {
+    return LookUpVariable(expr.Keyword, expr);
+  }
+
   object? IExprVisitor<object?>.VisitLambdaExpr(LambdaExpr expr)
   {
     return new LoxLambdaFunction(expr, Environment);

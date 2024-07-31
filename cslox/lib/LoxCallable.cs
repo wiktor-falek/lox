@@ -37,6 +37,13 @@ public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure) : L
 
     return null;
   }
+
+  public LoxFunction Bind(LoxInstance instance)
+  {
+    ScopeEnvironment environment = new(Closure);
+    environment.Define(instance);
+    return new LoxFunction(Declaration, environment);
+  }
 }
 
 public class LoxLambdaFunction(LambdaExpr declaration, ScopeEnvironment closure) : LoxCallable
