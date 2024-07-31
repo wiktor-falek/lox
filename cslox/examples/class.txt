@@ -7,9 +7,11 @@ class Dog {
 print(Dog);
 
 var doggy = Dog();
-print(doggy);
+print(doggy); 
 
 doggy.name = "Abby";
 print(doggy.name);
 
-print(doggy.age);
+doggy.woof();
+
+print(doggy.age); // Undefined property

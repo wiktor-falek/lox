@@ -267,6 +267,11 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     Declare(stmt.Name);
     Define(stmt.Name);
+
+    foreach (var method in stmt.Methods)
+    {
+      ResolveFunction(method, FunctionType.METHOD);
+    }
   }
 
   public void VisitIfStmt(IfStmt stmt)
@@ -337,5 +342,6 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     NONE,
     FUNCTION,
+    METHOD,
   }
 }

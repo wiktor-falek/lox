@@ -10,8 +10,10 @@ class LoxInstance(LoxClass @class)
       return value;
     }
 
-    throw new RuntimeError(name,
-       $"Undefined property '{name.Lexeme}'.");
+    LoxFunction? method = @Class.FindMethod(name.Lexeme);
+    if (method is not null) return method;
+
+    throw new RuntimeError(name, $"Undefined property '{name.Lexeme}'.");
   }
 
   public void Set(Token name, object? value)

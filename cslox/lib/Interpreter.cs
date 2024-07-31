@@ -138,7 +138,14 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitClassStmt(ClassStmt stmt)
   {
-    LoxClass @class = new(stmt.Name.Lexeme);
+    Dictionary<string, LoxFunction> methods = [];
+    foreach (var method in stmt.Methods)
+    {
+      LoxFunction function = new(method, Environment);
+      methods.Add(method.Name.Lexeme, function);
+    }
+
+    LoxClass @class = new(stmt.Name.Lexeme, methods);
     Define(stmt.Name, @class);
   }
 
