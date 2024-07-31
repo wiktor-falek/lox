@@ -5,6 +5,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   private readonly Interpreter Interpreter = interpreter;
   private readonly Stack<Dictionary<string, Variable>> Scopes = [];
   private FunctionType CurrentFunction = FunctionType.NONE;
+  private ClassType CurrentClass = ClassType.NONE;
   private bool IsInLoop = false;
   private readonly List<(int line, string message)> UnusedVariableWarnings = [];
 
@@ -234,7 +235,15 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
   public Void VisitThisExpr(ThisExpr expr)
   {
-    ResolveLocal(expr, expr.Keyword, true);
+    if (CurrentClass is ClassType.NONE)
+    {
+      Lox.Error(expr.Keyword, "Can't use 'this' outside of a class.");
+    }
+    else
+    {
+      ResolveLocal(expr, expr.Keyword, true);
+    }
+
     return default;
   }
 
@@ -271,6 +280,9 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
   public void VisitClassStmt(ClassStmt stmt)
   {
+    ClassType enclosingClass = CurrentClass;
+    CurrentClass = ClassType.CLASS;
+
     Declare(stmt.Name);
     Define(stmt.Name);
 
@@ -286,6 +298,8 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     }
 
     EndScope();
+
+    CurrentClass = enclosingClass;
   }
 
   public void VisitIfStmt(IfStmt stmt)
@@ -357,5 +371,11 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     NONE,
     FUNCTION,
     METHOD,
+  }
+
+  private enum ClassType
+  {
+    NONE,
+    CLASS
   }
 }
