@@ -1,0 +1,47 @@
+class Node {
+  new(data, next) {
+    this.data = data;
+    this.next = next;
+    return this;
+  }
+}
+
+class LinkedList {
+  new() {
+    this.length = 0;
+    this.head = nil;
+    this.tail = nil;
+    return this;
+  }
+
+  push(data) {
+    var node = Node().new(data, nil);
+
+    if (this.head == nil) {
+      this.head = node;
+      this.tail = node;
+    }
+    else {
+      this.tail.next = node;
+      this.tail = node;
+    }
+
+    this.length = this.length + 1;
+    return this;
+  }
+}
+
+var list = LinkedList().new();
+list
+  .push("a")
+  .push("b")
+  .push("c")
+  .push("d");
+
+print(list.length);
+
+var curr = list.head;
+while (curr != nil) {
+  print(curr.data);
+  curr = curr.next;
+}
