@@ -1,21 +1,19 @@
 class Node {
-  new(data, next) {
+  init(data, next) {
     this.data = data;
     this.next = next;
-    return this;
   }
 }
 
 class LinkedList {
-  new() {
+  init() {
     this.length = 0;
     this.head = nil;
     this.tail = nil;
-    return this;
   }
 
   push(data) {
-    var node = Node().new(data, nil);
+    var node = Node(data, nil);
 
     if (this.head == nil) {
       this.head = node;
@@ -31,7 +29,7 @@ class LinkedList {
   }
 }
 
-var list = LinkedList().new();
+var list = LinkedList();
 list
   .push("a")
   .push("b")

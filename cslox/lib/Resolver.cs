@@ -294,8 +294,11 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
     foreach (var method in stmt.Methods)
     {
-      ResolveFunction(method, FunctionType.METHOD);
+      FunctionType declaration =
+        method.Name.Lexeme == "init" ? FunctionType.INITIALIZER : FunctionType.METHOD;
+      ResolveFunction(method, declaration);
     }
+
 
     EndScope();
 
@@ -327,6 +330,11 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
     if (stmt.Value is not null)
     {
+      if (CurrentFunction is FunctionType.INITIALIZER)
+      {
+        Lox.Error(stmt.Keyword, "Can't return a value from an initializer.");
+      }
+      
       Resolve(stmt.Value);
     }
   }
@@ -370,6 +378,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
   {
     NONE,
     FUNCTION,
+    INITIALIZER,
     METHOD,
   }
 

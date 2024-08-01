@@ -132,7 +132,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitFunctionStmt(FunctionStmt stmt)
   {
-    LoxFunction function = new(stmt, Environment);
+    LoxFunction function = new(stmt, Environment, isInitializer: false);
     Define(stmt.Name, function);
   }
 
@@ -141,7 +141,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Dictionary<string, LoxFunction> methods = [];
     foreach (var method in stmt.Methods)
     {
-      LoxFunction function = new(method, Environment);
+      LoxFunction function = new(method, Environment, isInitializer: method.Name.Lexeme == "init");
       methods.Add(method.Name.Lexeme, function);
     }
 

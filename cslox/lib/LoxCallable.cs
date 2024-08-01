@@ -10,12 +10,13 @@ public abstract class LoxCallable
   }
 }
 
-public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure) : LoxCallable
+public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure, bool isInitializer) : LoxCallable
 {
   public override string Name => Declaration.Name.Lexeme;
   public override int Arity => Declaration.Parameters.Count;
   private readonly FunctionStmt Declaration = declaration;
   private readonly ScopeEnvironment Closure = closure;
+  private readonly bool IsInitializer = isInitializer;
 
   public override object? Call(Interpreter interpreter, List<object?> arguments)
   {
@@ -32,7 +33,14 @@ public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure) : L
     }
     catch (Return returnValue)
     {
+      if (IsInitializer) return Closure.GetAt(0, 0); // return 'this' in early return
       return returnValue.Value;
+    }
+
+    if (IsInitializer)
+    {
+      // return 'this' in class initializer
+      return Closure.GetAt(0, 0);
     }
 
     return null;
@@ -42,7 +50,7 @@ public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure) : L
   {
     ScopeEnvironment environment = new(Closure);
     environment.Define(instance);
-    return new LoxFunction(Declaration, environment);
+    return new LoxFunction(Declaration, environment, IsInitializer);
   }
 }
 

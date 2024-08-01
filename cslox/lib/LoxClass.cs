@@ -1,8 +1,16 @@
 public class LoxClass(string name, Dictionary<string, LoxFunction> methods) : LoxCallable
 {
   public override string Name => name;
-  public override int Arity => 0;
   public readonly Dictionary<string, LoxFunction> Methods = methods;
+
+  public override int Arity
+  {
+    get
+    {
+      LoxFunction? initializer = FindMethod("init");
+      return initializer?.Arity ?? 0;
+    } 
+  }
 
   public LoxFunction? FindMethod(string name)
   {
@@ -13,6 +21,8 @@ public class LoxClass(string name, Dictionary<string, LoxFunction> methods) : Lo
   public override object? Call(Interpreter interpreter, List<object?> arguments)
   {
     LoxInstance instance = new(this);
+    LoxFunction? initializer = FindMethod("init");
+    initializer?.Bind(instance).Call(interpreter, arguments);
     return instance;
   }
 
