@@ -1,19 +1,26 @@
 class Cake {
-  test() {
-    print(this);
+  init(flavor) {
+    this.flavor = flavor;
   }
 
   taste() {
     var adjective = "delicious";
     print("The " + this.flavor + " cake is " + adjective + "!");
   }
+
+  get_self() {
+    return this;
+  }
 }
 
-var cake = Cake();
-cake.flavor = "German chocolate";
+var cake = Cake("Chocolate");
 cake.taste();
 
 class Foo {
+  init() {
+    this.x = 0;
+  }
+  
   get_self() {
     return this;
   }
@@ -21,4 +28,9 @@ class Foo {
 
 var foo = Foo();
 var bound_method = foo.get_self;
+var foo_copy = bound_method();
+
 print(foo.get_self() == bound_method()); // True
+
+foo.x = 1;
+print(foo.x == foo_copy.x); // True
