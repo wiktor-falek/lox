@@ -1,15 +1,17 @@
-public class LoxClass(string name, Dictionary<string, LoxFunction> methods) : LoxCallable
+public class LoxClass(string name, Dictionary<string, LoxFunction> methods) : ILoxCallable, ILoxInstance
 {
-  public override string Name => name;
-  public readonly Dictionary<string, LoxFunction> Methods = methods;
+  private readonly Dictionary<string, LoxFunction> Methods = methods;
+  public string Name => name;
+  public LoxClass Class => this;
+  public Dictionary<string, object?> Fields { get; } = [];
 
-  public override int Arity
+  public int Arity
   {
     get
     {
       LoxFunction? initializer = FindMethod("init");
       return initializer?.Arity ?? 0;
-    } 
+    }
   }
 
   public LoxFunction? FindMethod(string name)
@@ -18,12 +20,22 @@ public class LoxClass(string name, Dictionary<string, LoxFunction> methods) : Lo
     return method;
   }
 
-  public override object? Call(Interpreter interpreter, List<object?> arguments)
+  public object? Call(Interpreter interpreter, List<object?> arguments)
   {
     LoxInstance instance = new(this);
     LoxFunction? initializer = FindMethod("init");
     initializer?.Bind(instance).Call(interpreter, arguments);
     return instance;
+  }
+
+  public void Set(Token name, object? value)
+  {
+    throw new NotImplementedException();
+  }
+
+  public object? Get(Token name)
+  {
+    throw new NotImplementedException();
   }
 
   public override string ToString()

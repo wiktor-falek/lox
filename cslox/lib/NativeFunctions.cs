@@ -1,5 +1,10 @@
-public abstract class LoxNativeFunction : LoxCallable
+public abstract class LoxNativeFunction : ILoxCallable
 {
+  public abstract int Arity { get; }
+  public abstract string Name { get; }
+
+  public abstract object? Call(Interpreter interpreter, List<object?> arguments);
+
   public override string ToString()
   {
     return $"<built-in function {Name}>";

@@ -1,16 +1,24 @@
-public class LoxInstance(LoxClass @class)
+public interface ILoxInstance
 {
-  private readonly LoxClass @Class = @class;
-  private readonly Dictionary<string, object?> fields = [];
+  LoxClass Class { get; }
+  Dictionary<string, object?> Fields { get; }
+  object? Get(Token name);
+  void Set(Token name, object? value);
+}
+
+public class LoxInstance(LoxClass @class) : ILoxInstance
+{
+  public LoxClass Class { get; } = @class;
+  public Dictionary<string, object?> Fields { get; } = [];
 
   public object? Get(Token name)
   {
-    if (fields.TryGetValue(name.Lexeme, out var value))
+    if (Fields.TryGetValue(name.Lexeme, out var value))
     {
       return value;
     }
 
-    LoxFunction? method = @Class.FindMethod(name.Lexeme);
+    LoxFunction? method = Class.FindMethod(name.Lexeme);
     if (method is not null) return method.Bind(this);
 
     throw new RuntimeError(name, $"Undefined property '{name.Lexeme}'.");
@@ -18,12 +26,12 @@ public class LoxInstance(LoxClass @class)
 
   public void Set(Token name, object? value)
   {
-    fields.Remove(name.Lexeme);
-    fields.Add(name.Lexeme, value);
+    Fields.Remove(name.Lexeme);
+    Fields.Add(name.Lexeme, value);
   }
 
   public override string ToString()
   {
-    return $"<class {@Class.Name} instance>";
+    return $"<class {Class.Name} instance>";
   }
 }
