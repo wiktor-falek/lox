@@ -44,7 +44,6 @@ block          → "{" declaration* "}" ;
 
 
 # EXPRESSIONS
-
 expression     → assignment ;
 
 lambda         → "fun" "(" parameters? ")" block ;

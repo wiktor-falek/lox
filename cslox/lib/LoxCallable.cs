@@ -33,7 +33,7 @@ public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure, boo
     }
     catch (Return returnValue)
     {
-      if (IsInitializer) return Closure.GetAt(0, 0); // return 'this' in early return
+      if (IsInitializer) return Closure.GetAt(0, 0); // return 'this' in class initializer early return
       return returnValue.Value;
     }
 
