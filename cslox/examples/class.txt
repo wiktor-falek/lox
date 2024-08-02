@@ -1,36 +1,52 @@
-class Cake {
-  init(flavor) {
-    this.flavor = flavor;
+class Rectangle {
+  // Special constructor method
+  init(width, height) {
+    this.width = width;
+    this.height = height;
+    return; // early return `this` implicitly
+    // return 1; [line 7] Error at 'return': Can't return a value from an initializer.
   }
 
-  taste() {
-    var adjective = "delicious";
-    print("The " + this.flavor + " cake is " + adjective + "!");
+  area() {
+    return this.width * this.height;
   }
 
-  get_self() {
-    return this;
+  dimensions() {
+    return this.width + "x" + this.height;
+  }
+
+  // Static method
+  static compare_areas(first, second) {
+    first_area = first.area();
+    second_area = second.area();
+    
+    if (first_area > second_area) {
+      print("The first rectangle is larger.");
+    }
+    else if (first_area < second_area) {
+      print("The second rectangle is larger.");
+    }
+    else {
+      print("Both rectangles have identical area.");
+    }
   }
 }
 
-var cake = Cake("Chocolate");
-cake.taste();
+var rect_a = Rectangle(3, 4);
+var rect_b = Rectangle(5, 5);
 
-class Foo {
-  init() {
-    this.x = 0;
-  }
-  
-  get_self() {
-    return this;
-  }
-}
+print(rect_a.area());
+print(rect_b.area());
 
-var foo = Foo();
-var bound_method = foo.get_self;
-var foo_copy = bound_method();
+// Bound methods
+var rect_a_dimensions_method = rect_a.dimensions;
+rect_b.dimensions = rect_a_dimensions_method;
+// Since it's the method of rect_a, `this` refers to rect_a, 
+// so they are equal even though they have different dimensions
+print(rect_a.dimensions() == rect_b.dimensions());
 
-print(foo.get_self() == bound_method()); // True
+Rectangle.compare_areas(rect_a, rect_b); // "The second rectangle is larger."
 
-foo.x = 1;
-print(foo.x == foo_copy.x); // True
+// Reinitialization
+rect_a.init(5, 5); 
+Rectangle.compare_areas(rect_a, rect_b); // "Both rectangles have identical area."
