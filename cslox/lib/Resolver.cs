@@ -294,7 +294,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
     Token keyword = new(TokenType.THIS, "this", null, stmt.Name.Line + 1);
     Dictionary<string, Variable> scope = Scopes.Peek();
-    scope.Add("this", new Variable(keyword, scope.Count, VariableState.DEFINED));
+    scope.Add("this", new Variable(keyword, scope.Count, VariableState.READ));
 
     foreach (var method in stmt.Methods)
     {

@@ -1,0 +1,17 @@
+class Test {
+  init(x) {
+    this.x = x;
+  }
+
+  get_x {
+    return this.x;
+  }
+
+  static getter {
+    return 0;
+  }
+}
+
+
+print(Test.getter == Test(1).getter); // True
+print(Test(1).get_x == 1); // True

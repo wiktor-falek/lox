@@ -30,7 +30,9 @@ ifStmt         → "if" "(" expression ")" statement
 
 exprStmt       → expression ";" ;
 
-classDecl      → "class" IDENTIFIER "{" method* "}" ;
+classDecl      → "class" IDENTIFIER "{" ( method | getter )* "}" ;
+
+getter         → ( "static" )? IDENTIFIER block;
 
 method         → ( "static" )? IDENTIFIER "(" parameters? ")" block ;
 

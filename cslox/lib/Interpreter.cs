@@ -132,7 +132,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitFunctionStmt(FunctionStmt stmt)
   {
-    LoxFunction function = new(stmt, Environment, isInitializer: false);
+    LoxFunction function = new(stmt, Environment);
     Define(stmt.Name, function);
   }
 
@@ -141,14 +141,15 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Dictionary<string, LoxFunction> methods = [];
     foreach (var method in stmt.Methods)
     {
-      LoxFunction function = new(method, Environment, isInitializer: method.Name.Lexeme == "init");
+      bool isInitializer = method.Name.Lexeme == "init";
+      LoxFunction function = new(method, Environment, isInitializer, method.IsGetter);
       methods.Add(method.Name.Lexeme, function);
     }
 
     Dictionary<string, LoxFunction> staticMethods = [];
     foreach (var method in stmt.StaticMethods)
     {
-      LoxFunction function = new(method, Environment, isInitializer: false);
+      LoxFunction function = new(method, Environment, isGetter: method.IsGetter);
       staticMethods.Add(method.Name.Lexeme, function);
     }
 
@@ -367,7 +368,12 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
     if (obj is ILoxInstance instance)
     {
-      return instance.Get(expr.Name);
+      var property = instance.Get(expr.Name);
+      if (property is LoxFunction getter && getter.IsGetter)
+      {
+        return getter.Call(this, []);
+      }
+      return property;
     }
 
     throw new RuntimeError(expr.Name, "Only instances have properties.");

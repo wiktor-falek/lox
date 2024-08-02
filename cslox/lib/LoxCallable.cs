@@ -6,13 +6,19 @@ public interface ILoxCallable
   string ToString();
 }
 
-public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure, bool isInitializer) : ILoxCallable
+public class LoxFunction(
+  FunctionStmt declaration,
+  ScopeEnvironment closure,
+  bool isInitializer = false,
+  bool isGetter = false
+  ) : ILoxCallable
 {
   public string Name => Declaration.Name.Lexeme;
   public int Arity => Declaration.Parameters.Count;
   private readonly FunctionStmt Declaration = declaration;
   private readonly ScopeEnvironment Closure = closure;
   private readonly bool IsInitializer = isInitializer;
+  public readonly bool IsGetter = isGetter;
 
   public object? Call(Interpreter interpreter, List<object?> arguments)
   {
@@ -46,7 +52,7 @@ public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure, boo
   {
     ScopeEnvironment environment = new(Closure);
     environment.Define(instance);
-    return new LoxFunction(Declaration, environment, IsInitializer);
+    return new LoxFunction(Declaration, environment, IsInitializer, IsGetter);
   }
 
   public override string ToString()
