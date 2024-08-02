@@ -94,10 +94,11 @@ public class FunctionStmt(Token name, List<Token> parameters, List<Stmt> body, b
   }
 }
 
-public class ClassStmt(Token name, List<FunctionStmt> methods) : Stmt
+public class ClassStmt(Token name, List<FunctionStmt> methods, List<FunctionStmt> staticMethods) : Stmt
 {
   public readonly Token Name = name;
   public readonly List<FunctionStmt> Methods = methods;
+  public readonly List<FunctionStmt> StaticMethods = staticMethods;
 
   override public void Accept(IStmtVisitor visitor)
   {

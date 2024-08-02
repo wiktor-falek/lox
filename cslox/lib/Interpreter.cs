@@ -145,7 +145,15 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
       methods.Add(method.Name.Lexeme, function);
     }
 
-    LoxClass @class = new(stmt.Name.Lexeme, methods);
+    Dictionary<string, LoxFunction> staticMethods = [];
+    foreach (var method in stmt.StaticMethods)
+    {
+      LoxFunction function = new(method, Environment, isInitializer: false);
+      staticMethods.Add(method.Name.Lexeme, function);
+    }
+
+    LoxClass @class = new(stmt.Name.Lexeme, methods, staticMethods);
+
     Define(stmt.Name, @class);
   }
 
@@ -337,7 +345,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
       arguments.Add(Evaluate(argument));
     }
 
-    if (callee is not LoxCallable function)
+    if (callee is not ILoxCallable function)
     {
       throw new RuntimeError(expr.Paren, "Can only call functions and classes.");
     }
@@ -357,7 +365,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     object? obj = Evaluate(expr.Obj);
 
-    if (obj is LoxInstance instance)
+    if (obj is ILoxInstance instance)
     {
       return instance.Get(expr.Name);
     }
@@ -369,7 +377,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     object? obj = Evaluate(expr.Obj);
 
-    if (obj is LoxInstance instance)
+    if (obj is ILoxInstance instance)
     {
       object? value = Evaluate(expr.Value);
       instance.Set(expr.Name, value);

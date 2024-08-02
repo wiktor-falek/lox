@@ -129,14 +129,23 @@ public class Parser(List<Token> tokens)
     Consume(LEFT_BRACE, "Expect '{' before class body.");
 
     List<FunctionStmt> methods = [];
+    List<FunctionStmt> staticMethods = [];
+
     while (!Check(RIGHT_BRACE) && !IsAtEnd())
     {
-      methods.Add(Function("method"));
+      if (Match(STATIC))
+      {
+        staticMethods.Add(Function("method"));
+      }
+      else
+      {
+        methods.Add(Function("method"));
+      }
     }
 
     Consume(RIGHT_BRACE, "Expect '}' after class body.");
 
-    return new ClassStmt(name, methods);
+    return new ClassStmt(name, methods, staticMethods);
   }
 
   private FunctionStmt Function(string kind)

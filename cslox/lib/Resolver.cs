@@ -239,6 +239,10 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     {
       Lox.Error(expr.Keyword, "Can't use 'this' outside of a class.");
     }
+    else if (CurrentFunction is FunctionType.STATIC_METHOD)
+    {
+      Lox.Error(expr.Keyword, "Can't use 'this' in a static method of a class.");
+    }
     else
     {
       ResolveLocal(expr, expr.Keyword, true);
@@ -299,6 +303,12 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
       ResolveFunction(method, declaration);
     }
 
+    foreach (var method in stmt.StaticMethods)
+    {
+      FunctionType declaration =
+        method.Name.Lexeme == "init" ? FunctionType.INITIALIZER : FunctionType.STATIC_METHOD;
+      ResolveFunction(method, declaration);
+    }
 
     EndScope();
 
@@ -334,7 +344,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
       {
         Lox.Error(stmt.Keyword, "Can't return a value from an initializer.");
       }
-      
+
       Resolve(stmt.Value);
     }
   }
@@ -380,6 +390,7 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     FUNCTION,
     INITIALIZER,
     METHOD,
+    STATIC_METHOD
   }
 
   private enum ClassType

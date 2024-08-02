@@ -30,11 +30,13 @@ ifStmt         → "if" "(" expression ")" statement
 
 exprStmt       → expression ";" ;
 
-classDecl      → "class" IDENTIFIER "{" function* "}" ;
+classDecl      → "class" IDENTIFIER "{" method* "}" ;
 
-funDecl        → "fun" function ;
+method         → ( "static" )? IDENTIFIER "(" parameters? ")" block ;
 
 function       → IDENTIFIER "(" parameters? ")" block ;
+
+funDecl        → "fun" function ;
 
 parameters     → IDENTIFIER  ( "," IDENTIFIER )* ;
 
