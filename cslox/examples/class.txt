@@ -7,7 +7,8 @@ class Rectangle {
     // return 1; [line 7] Error at 'return': Can't return a value from an initializer.
   }
 
-  area() {
+  // getter method
+  area {
     return this.width * this.height;
   }
 
@@ -17,8 +18,8 @@ class Rectangle {
 
   // Static method
   static compare_areas(first, second) {
-    first_area = first.area();
-    second_area = second.area();
+    first_area = first.area;
+    second_area = second.area;
     
     if (first_area > second_area) {
       print("The first rectangle is larger.");
@@ -35,8 +36,8 @@ class Rectangle {
 var rect_a = Rectangle(3, 4);
 var rect_b = Rectangle(5, 5);
 
-print(rect_a.area());
-print(rect_b.area());
+print(rect_a.area);
+print(rect_b.area);
 
 // Bound methods
 var rect_a_dimensions_method = rect_a.dimensions;
