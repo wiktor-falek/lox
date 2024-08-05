@@ -94,9 +94,10 @@ public class FunctionStmt(Token name, List<Token> parameters, List<Stmt> body, b
   }
 }
 
-public class ClassStmt(Token name, List<FunctionStmt> methods, List<FunctionStmt> staticMethods) : Stmt
+public class ClassStmt(Token name, VariableExpr? superclass, List<FunctionStmt> methods, List<FunctionStmt> staticMethods) : Stmt
 {
   public readonly Token Name = name;
+  public readonly VariableExpr? Superclass = superclass;
   public readonly List<FunctionStmt> Methods = methods;
   public readonly List<FunctionStmt> StaticMethods = staticMethods;
 

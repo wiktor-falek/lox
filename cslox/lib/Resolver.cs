@@ -233,6 +233,11 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
     return default;
   }
 
+  public Void VisitSuperExpr(SuperExpr expr)
+  {
+    return default;
+  }
+
   public Void VisitThisExpr(ThisExpr expr)
   {
     if (CurrentClass is ClassType.NONE)
@@ -289,6 +294,15 @@ class Resolver(Interpreter interpreter) : IExprVisitor<Void>, IStmtVisitor
 
     Declare(stmt.Name);
     Define(stmt.Name);
+
+    if (stmt.Superclass is not null)
+    {
+      if (stmt.Name.Lexeme == stmt.Superclass.Name.Lexeme)
+      {
+        Lox.Error(stmt.Name, "A class can't inherit from itself.");
+      }
+      Resolve(stmt.Superclass);
+    }
 
     BeginScope();
 

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "memory.h"
 
@@ -10,7 +11,9 @@ void *reallocate(void *pointer, size_t old_size, size_t new_size)
 	}
 
 	void *result = realloc(pointer, new_size);
-	if (result == NULL)
+	if (result == NULL) {
+		printf("Realloc failed");
 		exit(1);
+	}
 	return result;
 }

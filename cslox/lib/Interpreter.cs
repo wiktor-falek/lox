@@ -138,6 +138,20 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitClassStmt(ClassStmt stmt)
   {
+    LoxClass? superclass = null;
+    if (stmt.Superclass is not null)
+    {
+      object? value = Evaluate(stmt.Superclass);
+      if (value is LoxClass super)
+      {
+        superclass = super;
+      }
+      else
+      {
+        throw new RuntimeError(stmt.Superclass.Name, "Superclass must be a class.");
+      }
+    }
+
     Dictionary<string, LoxFunction> methods = [];
     foreach (var method in stmt.Methods)
     {
@@ -153,7 +167,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
       staticMethods.Add(method.Name.Lexeme, function);
     }
 
-    LoxClass @class = new(stmt.Name.Lexeme, methods, staticMethods);
+    LoxClass @class = new(stmt.Name.Lexeme, superclass, methods, staticMethods);
 
     Define(stmt.Name, @class);
   }
@@ -369,10 +383,12 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     if (obj is ILoxInstance instance)
     {
       var property = instance.Get(expr.Name);
+
       if (property is LoxFunction getter && getter.IsGetter)
       {
         return getter.Call(this, []);
       }
+
       return property;
     }
 
@@ -396,6 +412,11 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   object? IExprVisitor<object?>.VisitThisExpr(ThisExpr expr)
   {
     return LookUpVariable(expr.Keyword, expr);
+  }
+
+  object? IExprVisitor<object?>.VisitSuperExpr(SuperExpr expr)
+  {
+
   }
 
   object? IExprVisitor<object?>.VisitLambdaExpr(LambdaExpr expr)

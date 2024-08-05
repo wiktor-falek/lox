@@ -25,6 +25,7 @@ class GenerateAst
       "SetExpr      : Expr obj, Token name, Expr value",
       "LambdaExpr   : List<Token> parameters, List<Stmt> body",
       "ThisExpr     : Token keyword",
+      "SuperExpr    : Token keyword, Token method",
     ]);
 
     DefineAst(outputDir, "Stmt", "void", [
@@ -35,7 +36,7 @@ class GenerateAst
       "WhileStmt    : Expr condition, Stmt body",
       "BreakStmt    : Token keyword",
       "FunctionStmt : Token name, List<Token> parameters, List<Stmt> body, bool isGetter",
-      "ClassStmt    : Token name, List<FunctionStmt> methods, List<FunctionStmt> staticMethods",
+      "ClassStmt    : Token name, VariableExpr? superclass, List<FunctionStmt> methods, List<FunctionStmt> staticMethods",
       "ReturnStmt   : Token keyword, Expr? value",
     ]);
   }

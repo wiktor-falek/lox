@@ -11,6 +11,7 @@ void init_chunk(Chunk *chunk)
 void free_chunk(Chunk *chunk)
 {
 	FREE_ARRAY(uint8_t, chunk->code, chunk->count);
+	free_value_array(&chunk->constants);
 	init_chunk(chunk);
 }
 
@@ -25,4 +26,10 @@ void write_chunk(Chunk *chunk, uint8_t byte)
 
 	chunk->code[chunk->count] = byte;
 	chunk->count++;
+}
+
+int add_constant(Chunk *chunk, Value value)
+{
+	write_value_array(&chunk->constants, value);
+	return chunk->constants.count - 1;
 }

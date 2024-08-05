@@ -17,7 +17,7 @@ gcc main.c -o build/main.o -c
 gcc chunk.c -o build/chunk.o -c
 gcc memory.c -o build/memory.o -c
 gcc debug.c -o build/debug.o -c
-gcc -o clox build/main.o build/chunk.o build/memory.o build/debug.o
-gcc build/main.o build/chunk.o build/memory.o build/debug.o -o build/clox.exe
+gcc value.c -o build/value.o -c
+gcc build/main.o build/chunk.o build/memory.o build/debug.o build/value.o -o build/clox.exe
 
 ./build/clox.exe

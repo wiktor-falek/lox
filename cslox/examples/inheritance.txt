@@ -1,0 +1,34 @@
+class Base {
+  base() {
+    print("base method");
+  }
+
+  static static_base() {
+    print("static base method");
+  }
+}
+
+class Derived < Base {
+  derived() {
+    print("derived method");
+  }
+
+  static static_derived() {
+    print("static derived method");
+  }
+}
+
+var base = Base();
+var derived = Derived();
+
+Derived.static_derived();
+Derived.static_base();
+
+Base.static_base();
+// Base.static_derived (); [line 28] Undefined property 'static_derived'.
+
+derived.derived();
+derived.base();
+
+base.base();
+// base.derived(); [line 34] Undefined property 'derived'.

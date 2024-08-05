@@ -1,12 +1,13 @@
 public class LoxClass(
   string name,
-  Dictionary<string,
-  LoxFunction> methods,
+  LoxClass? superclass,
+  Dictionary<string, LoxFunction> methods,
   Dictionary<string, LoxFunction> staticMethods
 ) : ILoxCallable, ILoxInstance
 {
   private readonly Dictionary<string, LoxFunction> Methods = methods;
   private readonly Dictionary<string, LoxFunction> StaticMethods = staticMethods;
+  public LoxClass? Superclass = superclass;
   public string Name => name;
   public LoxClass Class => this;
   public Dictionary<string, object?> Fields { get; } = [];
@@ -22,12 +23,21 @@ public class LoxClass(
 
   public LoxFunction? FindMethod(string name)
   {
-    Methods.TryGetValue(name, out var method);
-
-    if (method is null)
+    if (Methods.TryGetValue(name, out var method))
     {
-      LoxFunction? staticMethod = FindStaticMethod(name);
+      return method;
+    };
+
+    LoxFunction? staticMethod = FindStaticMethod(name);
+
+    if (staticMethod is not null)
+    {
       return staticMethod;
+    }
+
+    if (Superclass is not null)
+    {
+      return Superclass.FindMethod(name);
     }
 
     return method;
@@ -35,8 +45,12 @@ public class LoxClass(
 
   public LoxFunction? FindStaticMethod(string name)
   {
-    StaticMethods.TryGetValue(name, out var method);
-    return method;
+    if (StaticMethods.TryGetValue(name, out var method))
+    {
+      return method;
+    }
+
+    return Superclass?.FindStaticMethod(name);
   }
 
   public object? Call(Interpreter interpreter, List<object?> arguments)
