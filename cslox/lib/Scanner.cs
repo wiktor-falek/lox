@@ -20,6 +20,7 @@ public class Scanner(string source)
       {"or", OR},
       {"return", RETURN},
       {"super", SUPER},
+      {"static", STATIC},
       {"this", THIS},
       {"true", TRUE},
       {"var", VAR},

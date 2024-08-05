@@ -132,7 +132,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
 
   void IStmtVisitor.VisitFunctionStmt(FunctionStmt stmt)
   {
-    LoxFunction function = new(stmt, Environment, isInitializer: false);
+    LoxFunction function = new(stmt, Environment);
     Define(stmt.Name, function);
   }
 
@@ -141,11 +141,20 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
     Dictionary<string, LoxFunction> methods = [];
     foreach (var method in stmt.Methods)
     {
-      LoxFunction function = new(method, Environment, isInitializer: method.Name.Lexeme == "init");
+      bool isInitializer = method.Name.Lexeme == "init";
+      LoxFunction function = new(method, Environment, isInitializer, method.IsGetter);
       methods.Add(method.Name.Lexeme, function);
     }
 
-    LoxClass @class = new(stmt.Name.Lexeme, methods);
+    Dictionary<string, LoxFunction> staticMethods = [];
+    foreach (var method in stmt.StaticMethods)
+    {
+      LoxFunction function = new(method, Environment, isGetter: method.IsGetter);
+      staticMethods.Add(method.Name.Lexeme, function);
+    }
+
+    LoxClass @class = new(stmt.Name.Lexeme, methods, staticMethods);
+
     Define(stmt.Name, @class);
   }
 
@@ -337,7 +346,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
       arguments.Add(Evaluate(argument));
     }
 
-    if (callee is not LoxCallable function)
+    if (callee is not ILoxCallable function)
     {
       throw new RuntimeError(expr.Paren, "Can only call functions and classes.");
     }
@@ -357,9 +366,14 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     object? obj = Evaluate(expr.Obj);
 
-    if (obj is LoxInstance instance)
+    if (obj is ILoxInstance instance)
     {
-      return instance.Get(expr.Name);
+      var property = instance.Get(expr.Name);
+      if (property is LoxFunction getter && getter.IsGetter)
+      {
+        return getter.Call(this, []);
+      }
+      return property;
     }
 
     throw new RuntimeError(expr.Name, "Only instances have properties.");
@@ -369,7 +383,7 @@ public class Interpreter : IExprVisitor<object?>, IStmtVisitor
   {
     object? obj = Evaluate(expr.Obj);
 
-    if (obj is LoxInstance instance)
+    if (obj is ILoxInstance instance)
     {
       object? value = Evaluate(expr.Value);
       instance.Set(expr.Name, value);

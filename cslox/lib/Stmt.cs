@@ -81,11 +81,12 @@ public class BreakStmt(Token keyword) : Stmt
   }
 }
 
-public class FunctionStmt(Token name, List<Token> parameters, List<Stmt> body) : Stmt
+public class FunctionStmt(Token name, List<Token> parameters, List<Stmt> body, bool isGetter) : Stmt
 {
   public readonly Token Name = name;
   public readonly List<Token> Parameters = parameters;
   public readonly List<Stmt> Body = body;
+  public readonly bool IsGetter = isGetter;
 
   override public void Accept(IStmtVisitor visitor)
   {
@@ -93,10 +94,11 @@ public class FunctionStmt(Token name, List<Token> parameters, List<Stmt> body) :
   }
 }
 
-public class ClassStmt(Token name, List<FunctionStmt> methods) : Stmt
+public class ClassStmt(Token name, List<FunctionStmt> methods, List<FunctionStmt> staticMethods) : Stmt
 {
   public readonly Token Name = name;
   public readonly List<FunctionStmt> Methods = methods;
+  public readonly List<FunctionStmt> StaticMethods = staticMethods;
 
   override public void Accept(IStmtVisitor visitor)
   {

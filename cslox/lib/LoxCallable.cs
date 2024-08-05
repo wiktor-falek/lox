@@ -1,24 +1,26 @@
-public abstract class LoxCallable
+public interface ILoxCallable
 {
-  public abstract string Name { get; }
-  public abstract int Arity { get; }
-  public abstract object? Call(Interpreter interpreter, List<object?> arguments);
-
-  public override string ToString()
-  {
-    return $"<function {Name}>";
-  }
+  string Name { get; }
+  int Arity { get; }
+  object? Call(Interpreter interpreter, List<object?> arguments);
+  string ToString();
 }
 
-public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure, bool isInitializer) : LoxCallable
+public class LoxFunction(
+  FunctionStmt declaration,
+  ScopeEnvironment closure,
+  bool isInitializer = false,
+  bool isGetter = false
+  ) : ILoxCallable
 {
-  public override string Name => Declaration.Name.Lexeme;
-  public override int Arity => Declaration.Parameters.Count;
+  public string Name => Declaration.Name.Lexeme;
+  public int Arity => Declaration.Parameters.Count;
   private readonly FunctionStmt Declaration = declaration;
   private readonly ScopeEnvironment Closure = closure;
   private readonly bool IsInitializer = isInitializer;
+  public readonly bool IsGetter = isGetter;
 
-  public override object? Call(Interpreter interpreter, List<object?> arguments)
+  public object? Call(Interpreter interpreter, List<object?> arguments)
   {
     ScopeEnvironment environment = new(Closure);
 
@@ -50,18 +52,23 @@ public class LoxFunction(FunctionStmt declaration, ScopeEnvironment closure, boo
   {
     ScopeEnvironment environment = new(Closure);
     environment.Define(instance);
-    return new LoxFunction(Declaration, environment, IsInitializer);
+    return new LoxFunction(Declaration, environment, IsInitializer, IsGetter);
+  }
+
+  public override string ToString()
+  {
+    return $"<function {Name}>";
   }
 }
 
-public class LoxLambdaFunction(LambdaExpr declaration, ScopeEnvironment closure) : LoxCallable
+public class LoxLambdaFunction(LambdaExpr declaration, ScopeEnvironment closure) : ILoxCallable
 {
-  public override string Name => "(anonymous)";
-  public override int Arity => Declaration.Parameters.Count;
+  public string Name => "(anonymous)";
+  public int Arity => Declaration.Parameters.Count;
   private readonly LambdaExpr Declaration = declaration;
   private readonly ScopeEnvironment Closure = closure;
 
-  public override object? Call(Interpreter interpreter, List<object?> arguments)
+  public object? Call(Interpreter interpreter, List<object?> arguments)
   {
     ScopeEnvironment environment = new(Closure);
 
@@ -80,5 +87,10 @@ public class LoxLambdaFunction(LambdaExpr declaration, ScopeEnvironment closure)
     }
 
     return null;
+  }
+
+  public override string ToString()
+  {
+    return $"<function {Name}>";
   }
 }

@@ -129,41 +129,59 @@ public class Parser(List<Token> tokens)
     Consume(LEFT_BRACE, "Expect '{' before class body.");
 
     List<FunctionStmt> methods = [];
+    List<FunctionStmt> staticMethods = [];
+
     while (!Check(RIGHT_BRACE) && !IsAtEnd())
     {
-      methods.Add(Function("method"));
+      if (Match(STATIC))
+      {
+        staticMethods.Add(Function("method"));
+      }
+      else
+      {
+        methods.Add(Function("method"));
+      }
     }
 
     Consume(RIGHT_BRACE, "Expect '}' after class body.");
 
-    return new ClassStmt(name, methods);
+    return new ClassStmt(name, methods, staticMethods);
   }
 
   private FunctionStmt Function(string kind)
   {
     Token name = Consume(IDENTIFIER, $"Expect {kind} name.");
-    Consume(LEFT_PAREN, $"Expect '( after {kind} name.");
 
+    bool isGetter = false;
     List<Token> parameters = [];
 
-    if (!Check(RIGHT_PAREN))
+    if (kind == "method" && !Check(LEFT_PAREN))
     {
-      do
-      {
-        if (parameters.Count >= 255)
-        {
-          Error(Peek(), "Can't have more than 255 parameters.");
-        }
-        parameters.Add(Consume(IDENTIFIER, "Expect parameter name."));
-      } while (Match(COMMA));
+      isGetter = true;
     }
+    else
+    {
+      Consume(LEFT_PAREN, $"Expect '( after {kind} name.");
 
-    Consume(RIGHT_PAREN, "Expect ')' after parameters.");
+      if (!Check(RIGHT_PAREN))
+      {
+        do
+        {
+          if (parameters.Count >= 255)
+          {
+            Error(Peek(), "Can't have more than 255 parameters.");
+          }
+          parameters.Add(Consume(IDENTIFIER, "Expect parameter name."));
+        } while (Match(COMMA));
+      }
+
+      Consume(RIGHT_PAREN, "Expect ')' after parameters.");
+    }
 
     Consume(LEFT_BRACE, $"Expect '{{' before {kind} body.");
     List<Stmt> body = Block();
 
-    return new FunctionStmt(name, parameters, body);
+    return new FunctionStmt(name, parameters, body, isGetter);
   }
 
   private VarStmt VarDeclaration()

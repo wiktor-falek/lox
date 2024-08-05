@@ -34,8 +34,8 @@ class GenerateAst
       "VarStmt      : Token name, Expr? initializer",
       "WhileStmt    : Expr condition, Stmt body",
       "BreakStmt    : Token keyword",
-      "FunctionStmt : Token name, List<Token> parameters, List<Stmt> body",
-      "ClassStmt    : Token name, List<FunctionStmt> methods",
+      "FunctionStmt : Token name, List<Token> parameters, List<Stmt> body, bool isGetter",
+      "ClassStmt    : Token name, List<FunctionStmt> methods, List<FunctionStmt> staticMethods",
       "ReturnStmt   : Token keyword, Expr? value",
     ]);
   }
