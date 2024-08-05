@@ -2,6 +2,7 @@
 #define clox_chunk_h
 
 #include "common.h"
+#include "memory.h"
 
 typedef enum {
 	OP_RETURN,
